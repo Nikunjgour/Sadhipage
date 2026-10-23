@@ -38,8 +38,8 @@ export default function MyWeddingPagePreview() {
     },
   });
 
-  // Public link copy handler
-  const shareSlug = wedding?.shareSlug || wedding?.slug || wedding?._id || wedding?.id;
+  // Public link copy handler (sirf real shareSlug — Mongo _id backend 404 dega)
+  const shareSlug = wedding?.shareSlug || wedding?.slug || '';
   const publicShareUrl = shareSlug ? `${window.location.origin}/w/${shareSlug}` : '';
 
   // RSVP relay: sirf real shareSlug use karein (Mongo _id backend 404 dega)
@@ -124,7 +124,7 @@ export default function MyWeddingPagePreview() {
 
           {/* Action Buttons: Share, Regenerate, Edit Details, Delete */}
           <div className="flex items-center gap-2">
-            {publicShareUrl && (
+            {publicShareUrl ? (
               <Button
                 variant="secondary"
                 size="sm"
@@ -133,6 +133,8 @@ export default function MyWeddingPagePreview() {
               >
                 {copied ? 'Copied' : 'Share'}
               </Button>
+            ) : (
+              <span className="text-xs text-[#7A7A7A] italic">Generate your page first.</span>
             )}
 
             <Link to="/wedding/generate">

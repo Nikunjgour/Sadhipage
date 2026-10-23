@@ -2,7 +2,7 @@
 // NEW: Axios client aur request/response interceptors use kiye gaye hain token handling aur error normalization ke liye
 import axios from 'axios';
 
-// Base URL: .env file me defined VITE_API_URL se aata hai (default http://localhost:8080/api)
+// Base URL: .env file me defined VITE_API_URL se aata hai (localhost sirf dev fallback hai)
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 
 /**

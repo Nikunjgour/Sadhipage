@@ -57,6 +57,7 @@ export default function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/w/:shareSlug" element={<PublicWeddingPage />} />
             <Route path="/private" element={<PrivatePage />} />
+            <Route path="/not-found" element={<NotFoundPage />} />
 
             {/* ---------------- PROTECTED USER ROUTES ---------------- */}
             <Route

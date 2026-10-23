@@ -87,9 +87,10 @@ export default function DashboardPage() {
   // Background generation job chal raha hai — status khud widget banaata hai
   const isGenerating = wedding?.generationStatus === 'generating';
 
-  // Public share link generate karna
-  const shareSlug = wedding?.shareSlug || wedding?.slug || wedding?._id || wedding?.id;
+  // Public share link generate karna (sirf real shareSlug — Mongo _id backend 404 dega)
+  const shareSlug = wedding?.shareSlug || wedding?.slug || '';
   const publicShareUrl = shareSlug ? `${window.location.origin}/w/${shareSlug}` : '';
+  const shareUnavailable = !shareSlug;
 
   // Share link copy karne ka handler
   const handleCopyLink = () => {
@@ -419,9 +420,11 @@ export default function DashboardPage() {
                   </div>
                 ) : (
                   <div className="p-4 bg-gray-50 border border-dashed border-gray-300 rounded-xl text-center">
-                    <p className="text-xs text-[#7A7A7A]">
-                      Shaadi page generate hone ke baad yahan aapka live link activate hoga.
-                    </p>
+                    {shareUnavailable && (
+                      <p className="text-xs text-[#7A7A7A]">
+                        Generate your page first.
+                      </p>
+                    )}
                   </div>
                 )}
 

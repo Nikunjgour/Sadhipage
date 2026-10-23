@@ -8,6 +8,7 @@ import dns from 'dns';
 import rateLimit from 'express-rate-limit';
 
 import connectDB from './config/db.js';
+import Wedding from './models/Wedding.js';
 import authRoutes from './routes/authRoutes.js';
 import weddingRoutes from './routes/weddingRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
@@ -27,8 +28,31 @@ dotenv.config(); // Backup fallback current working directory ke liye
 /**
  * Database Connection:
  * Server start hote hi MongoDB ke sath connection initialize karta hai.
+ * Connect hone ke turant baad stuck generation jobs reset hote hain.
  */
-connectDB();
+
+/**
+ * Stuck Generation Jobs Reset:
+ * Server restart ke baad 'generating' status me phase hue background jobs
+ * hamesha failed me atke rahenge — startup par unhe 'failed' mark kar dete hain
+ * taaki user 'Try again' kar sake. MongoDB connect hone ke turant baad chalta hai.
+ */
+connectDB().then(async () => {
+  try {
+    const result = await Wedding.updateMany(
+      { generationStatus: 'generating' },
+      {
+        generationStatus: 'failed',
+        generationError: 'Server restart hone se generation ruk gayi, dobara try karein.',
+      }
+    );
+    if (result.modifiedCount > 0) {
+      console.log(`[Startup Reset]: ${result.modifiedCount} stuck generation jobs ko 'failed' mark kiya.`.yellow);
+    }
+  } catch (resetError) {
+    console.error('[Startup Reset Failed]:'.red, resetError.message);
+  }
+});
 
 /**
  * Express Application:
@@ -36,10 +60,21 @@ connectDB();
  */
 const app = express();
 
-// CHANGED: CORS configuration ko CLIENT_URL env variable se bind kiya aur credentials allow kiye
-const allowedOrigins = process.env.CLIENT_URL
-  ? process.env.CLIENT_URL.split(',').map((origin) => origin.trim())
-  : ['http://localhost:5173', 'http://localhost:5000', 'http://localhost:8080'];
+// Render ka reverse proxy — express-rate-limit ko client ka real IP mile (X-Forwarded-For)
+// Ye rate limiters define hone se PEHLE set hona zaroori hai
+app.set('trust proxy', 1);
+
+// CORS configuration CLIENT_URL env variable se bind hai aur credentials allow hain
+// Sirf comma-separated CLIENT_URL origins allow; localhost dev env me hi (NODE_ENV !== 'production')
+const envOrigins = (process.env.CLIENT_URL || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const isDev = process.env.NODE_ENV !== 'production';
+const allowedOrigins = isDev
+  ? [...new Set([...envOrigins, 'http://localhost:5173'])]
+  : envOrigins;
 
 app.use(
   cors({
