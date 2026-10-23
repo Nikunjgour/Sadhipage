@@ -11,6 +11,9 @@ export default function Sidebar({ variant = 'user' }) {
 
   const isAdmin = variant === 'admin';
 
+  // Logged-in user ka actual role (user-view sidebar me admin ko wapas jamiento dene ke liye)
+  const userIsAdmin = user?.role === 'admin';
+
   // Navigation Links configuration
   const userLinks = [
     { name: 'Dashboard', path: '/dashboard', icon: '📊' },
@@ -96,13 +99,28 @@ export default function Sidebar({ variant = 'user' }) {
             </div>
 
             {/* Current user pill */}
-            <div className="mt-4 pt-3 border-t border-inherit flex items-center justify-between text-xs">
-              <span className="truncate max-w-[120px] font-medium opacity-90">
+            <div className="mt-4 pt-3 border-t border-inherit flex items-center justify-between text-xs gap-2">
+              <span className="truncate max-w-[110px] font-medium opacity-90">
                 {user?.name || 'Logged In'}
               </span>
-              <span className={`px-2 py-0.5 rounded-full font-semibold uppercase text-[10px] ${isAdmin ? 'bg-[#C9A24B] text-[#380213]' : 'bg-[#FFF9F2] text-[#7A1E3A] border border-[#C9A24B]'}`}>
-                {user?.role || (isAdmin ? 'admin' : 'user')}
-              </span>
+              <div className="flex items-center gap-1.5 flex-shrink-0">
+                {/* Admin-only quick navigation to the Admin Panel */}
+                {!isAdmin && userIsAdmin && (
+                  <button
+                    onClick={() => {
+                      navigate('/admin/dashboard');
+                      setIsMobileOpen(false);
+                    }}
+                    className="px-2 py-0.5 rounded-full font-semibold uppercase text-[10px] bg-[#C9A24B] text-white hover:bg-[#B8913D] transition-colors"
+                    title="Go to Admin Panel"
+                  >
+                    👑 Admin
+                  </button>
+                )}
+                <span className={`px-2 py-0.5 rounded-full font-semibold uppercase text-[10px] ${isAdmin ? 'bg-[#C9A24B] text-[#380213]' : 'bg-[#FFF9F2] text-[#7A1E3A] border border-[#C9A24B]'}`}>
+                  {user?.role || (isAdmin ? 'admin' : 'user')}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -135,6 +153,19 @@ export default function Sidebar({ variant = 'user' }) {
 
         {/* Bottom: Logout & Switch mode */}
         <div className="p-4 border-t border-inherit">
+          {/* Admin user viewing the user side can jump back to the Admin Panel */}
+          {!isAdmin && userIsAdmin && (
+            <button
+              onClick={() => {
+                navigate('/admin/dashboard');
+                setIsMobileOpen(false);
+              }}
+              className="w-full flex items-center justify-center gap-2 mb-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-[#C9A24B]/10 hover:bg-[#C9A24B]/20 text-[#8A6A1F] border border-[#C9A24B]/50 transition-colors"
+            >
+              <span>Switch to Admin Panel ➔</span>
+            </button>
+          )}
+
           {/* Admin user can jump to public/user side */}
           {isAdmin && (
             <button
