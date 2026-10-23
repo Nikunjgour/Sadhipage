@@ -1,0 +1,17 @@
+{
+  "name": "shaadipage-root",
+  "version": "1.0.0",
+  "description": "ShaadiPage - AI Powered Royal Wedding Platform (Frontend + Backend)",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"magenta,cyan\" \"npm --prefix backend run dev\" \"npm --prefix fronted run dev\"",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix fronted run dev",
+    "build": "npm --prefix fronted run build",
+    "start": "npm --prefix backend start",
+    "install:all": "npm --prefix backend install && npm --prefix fronted install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

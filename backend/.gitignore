@@ -1,0 +1,12 @@
+# Ye file git repository me sensitive files aur bulky dependencies ko ignore karti hai
+node_modules/
+.env
+.env.*
+!.env.example
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+dist/
+logs/
+*.log
