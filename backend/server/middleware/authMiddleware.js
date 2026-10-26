@@ -33,7 +33,7 @@ export const protect = async (req, res, next) => {
         return res.status(401).json({
           success: false,
           data: null,
-          message: 'Not authorized: Is token se juda user database me nahi mila.',
+          message: 'Not authorized: User associated with this token was not found.',
         });
       }
 
@@ -44,7 +44,7 @@ export const protect = async (req, res, next) => {
       return res.status(401).json({
         success: false,
         data: null,
-        message: 'Not authorized: Token invalid, expire ya corrupt ho chuka hai.',
+        message: 'Not authorized: Token is invalid, expired, or corrupted.',
       });
     }
   }
@@ -54,7 +54,7 @@ export const protect = async (req, res, next) => {
     return res.status(401).json({
       success: false,
       data: null,
-      message: 'Not authorized: Authorization header me Bearer token missing hai.',
+      message: 'Not authorized: Bearer token is missing from the authorization header.',
     });
   }
 };
@@ -75,7 +75,7 @@ export const isAdmin = (req, res, next) => {
     return res.status(403).json({
       success: false,
       data: null,
-      message: 'Access forbidden: Ye action perform karne ke liye Admin permissions chahiye.',
+      message: 'Access forbidden: Admin permissions are required to perform this action.',
     });
   }
 };

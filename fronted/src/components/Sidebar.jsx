@@ -117,9 +117,11 @@ export default function Sidebar({ variant = 'user' }) {
                     👑 Admin
                   </button>
                 )}
-                <span className={`px-2 py-0.5 rounded-full font-semibold uppercase text-[10px] ${isAdmin ? 'bg-[#C9A24B] text-[#380213]' : 'bg-[#FFF9F2] text-[#7A1E3A] border border-[#C9A24B]'}`}>
-                  {user?.role || (isAdmin ? 'admin' : 'user')}
-                </span>
+                {!userIsAdmin && (
+                  <span className={`px-2 py-0.5 rounded-full font-semibold uppercase text-[10px] ${isAdmin ? 'bg-[#C9A24B] text-[#380213]' : 'bg-[#FFF9F2] text-[#7A1E3A] border border-[#C9A24B]'}`}>
+                    {user?.role || (isAdmin ? 'admin' : 'user')}
+                  </span>
+                )}
               </div>
             </div>
           </div>

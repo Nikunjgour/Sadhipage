@@ -30,7 +30,7 @@ export default function Navbar() {
                 Shaadi<span className="text-[#C9A24B]">Page</span>
               </span>
               <p className="text-[10px] tracking-widest uppercase text-[#7A7A7A] font-medium hidden sm:block">
-                Royal Wedding Spaces
+                Beautiful Wedding Spaces
               </p>
             </div>
           </Link>

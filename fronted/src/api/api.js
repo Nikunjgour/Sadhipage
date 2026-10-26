@@ -55,7 +55,7 @@ apiClient.interceptors.response.use(
     const message =
       (resData && resData.message) ||
       error.message ||
-      'Server par koi anpekshit truti aayi.';
+      'An unexpected server error occurred.';
 
     const customError = new Error(message);
     customError.status = status;

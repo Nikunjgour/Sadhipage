@@ -33,7 +33,7 @@ export default function PublicWeddingPage() {
           navigate('/private', { replace: true });
           return;
         }
-        setErrorStatus(err.message || 'Page load karne me asafal');
+        setErrorStatus(err.message || 'Failed to load the page');
       } finally {
         setLoading(false);
       }
@@ -51,7 +51,7 @@ export default function PublicWeddingPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FFF9F2]">
-        <LoadingSpinner message="Shaadi ka page load ho raha hai..." size="lg" />
+        <LoadingSpinner message="Loading your wedding page..." size="lg" />
       </div>
     );
   }
@@ -62,7 +62,7 @@ export default function PublicWeddingPage() {
         <div className="card-royal max-w-md p-8">
           <span className="text-4xl mb-4 block">⚠️</span>
           <h2 className="font-serif text-2xl font-bold text-[#7A1E3A] mb-2">
-            Page Load Nahi Ho Saka
+            Page Could Not Load
           </h2>
           <p className="text-sm text-[#7A7A7A] mb-6">{errorStatus}</p>
           <button
@@ -103,7 +103,7 @@ export default function PublicWeddingPage() {
       <div className="card-royal max-w-xl p-10 border border-[#C9A24B]">
         <div className="text-4xl mb-4">💍</div>
         <p className="text-xs uppercase tracking-widest text-[#C9A24B] font-bold mb-2">
-          Royal Wedding Celebration
+          Wedding Celebration
         </p>
         <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#7A1E3A] mb-4">
           {wedding?.brideName || 'Bride'} & {wedding?.groomName || 'Groom'}

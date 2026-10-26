@@ -70,13 +70,13 @@ export default function AdminUsersPage() {
         name: editFormData.name,
         email: editFormData.email,
       });
-      addToast(res?.message || 'User safaltapoorvak update ho gaya!', 'success');
+      addToast(res?.message || 'User updated successfully!', 'success');
       setEditUser(null);
       // Query cache invalidate karke live data sync karo
       queryClient.invalidateQueries({ queryKey: ['adminUsers'] });
       queryClient.invalidateQueries({ queryKey: ['adminAnalytics'] });
     } catch (err) {
-      addToast(err.message || 'User update nahi ho saka', 'error');
+      addToast(err.message || 'User could not be updated', 'error');
     } finally {
       setIsEditing(false);
     }
@@ -93,7 +93,7 @@ export default function AdminUsersPage() {
       const weddingsCount = res?.deletedWeddings ?? res?.data?.deletedWeddings ?? 0;
       const rsvpsCount = res?.deletedRsvps ?? res?.data?.deletedRsvps ?? 0;
       addToast(
-        res?.message || `User delete ho gaya (${weddingsCount} wedding, ${rsvpsCount} RSVPs safalta se hataye gaye).`,
+        res?.message || `User deleted (${weddingsCount} wedding, ${rsvpsCount} RSVPs removed successfully).`,
         'success'
       );
       setDeleteUserTarget(null);
@@ -101,7 +101,7 @@ export default function AdminUsersPage() {
       queryClient.invalidateQueries({ queryKey: ['adminWeddings'] });
       queryClient.invalidateQueries({ queryKey: ['adminAnalytics'] });
     } catch (err) {
-      addToast(err.message || 'User delete nahi ho saka', 'error');
+      addToast(err.message || 'User could not be deleted', 'error');
     } finally {
       setIsDeleting(false);
     }
@@ -158,12 +158,12 @@ export default function AdminUsersPage() {
         {/* Users Table / Mobile Cards */}
         {loading ? (
           <div className="card-royal p-12 flex justify-center">
-            <LoadingSpinner message="Users load ho rahe hain..." />
+            <LoadingSpinner message="Loading users..." />
           </div>
         ) : filteredUsers.length === 0 ? (
           <div className="card-royal p-12 text-center bg-white">
             <p className="text-base text-[#7A7A7A]">
-              Koi user match nahi hua.
+              No users matched your search.
             </p>
           </div>
         ) : (
@@ -358,7 +358,7 @@ export default function AdminUsersPage() {
       >
         <div className="space-y-4">
           <p className="text-sm text-[#2B2B2B]">
-            Kya aap sach me user <strong>{deleteUserTarget?.name}</strong> ({deleteUserTarget?.email}) ko delete karna chahte hain? Is user ko delete karne par uska wedding page aur saare RSVPs bhi hamesha ke liye delete ho jayenge.
+            Are you sure you want to delete user <strong>{deleteUserTarget?.name}</strong> ({deleteUserTarget?.email})? Deleting this user will also permanently delete their wedding page and all RSVPs.
           </p>
           <div className="pt-4 border-t border-[#EADCC9] flex justify-end gap-3">
             <Button

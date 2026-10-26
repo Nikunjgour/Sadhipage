@@ -100,7 +100,7 @@ export default function AdminDashboardPage() {
 
         {loading ? (
           <div className="card-royal p-12 flex justify-center">
-            <LoadingSpinner message="Analytics metrics calculate ho rahe hain..." />
+            <LoadingSpinner message="Calculating analytics metrics..." />
           </div>
         ) : (
           <div className="space-y-8">

@@ -43,7 +43,7 @@ connectDB().then(async () => {
       { generationStatus: 'generating' },
       {
         generationStatus: 'failed',
-        generationError: 'Server restart hone se generation ruk gayi, dobara try karein.',
+        generationError: 'Generation was interrupted by a server restart, please try again.',
       }
     );
     if (result.modifiedCount > 0) {
@@ -85,7 +85,7 @@ app.use(
       }
       // Disallowed origin par error return karo, aur usme 403 status mark kiya
       // taaki global error handler 500 ke bajaye 403 Forbidden bheje
-      const corsError = new Error(`CORS policy dwara origin ${origin} block kiya gaya hai.`);
+      const corsError = new Error(`Origin ${origin} has been blocked by CORS policy.`);
       corsError.statusCode = 403;
       return callback(corsError);
     },
@@ -110,14 +110,14 @@ const makeLimiter = (windowMs, limit, message) =>
 const authLimiter = makeLimiter(
   15 * 60 * 1000,
   20,
-  'Bahut zyada attempts ho gaye. Kripya 15 minute baad punah prayas karein.'
+  'Too many attempts. Please try again after 15 minutes.'
 );
 
 // AI generation: har ghante me max 10 calls (Gemini quota abuse rokne ke liye)
 const aiLimiter = makeLimiter(
   60 * 60 * 1000,
   10,
-  'AI generation limit reached. Kripya ek ghante baad try karein.'
+  'AI generation limit reached. Please try again after an hour.'
 );
 
 app.use(express.json());
@@ -163,7 +163,7 @@ app.use((req, res, next) => {
   res.status(404).json({
     success: false,
     data: null,
-    message: `Ye API route server par nahi mila: ${req.method} ${req.originalUrl}`,
+    message: `API route not found on this server: ${req.method} ${req.originalUrl}`,
   });
 });
 
@@ -178,7 +178,7 @@ app.use((err, req, res, next) => {
   res.status(statusCode).json({
     success: false,
     data: null,
-    message: err.message || 'Server par koi internal error aaya hai.',
+    message: err.message || 'An internal server error occurred.',
     // NODE_ENV set na ho toh bhi production-safe: stack sirf 'development' me
     stack: process.env.NODE_ENV === 'development' ? err.stack : null,
   });

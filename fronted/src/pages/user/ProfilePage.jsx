@@ -42,7 +42,7 @@ export default function ProfilePage() {
   // Logout handler
   const handleLogout = () => {
     logout();
-    addToast('Aap logout ho chuke hain.', 'info');
+    addToast('You have been logged out.', 'info');
     navigate('/login');
   };
 
@@ -85,17 +85,17 @@ export default function ProfilePage() {
         {/* Loading State when no user data is cached yet */}
         {loading && !effectiveUser ? (
           <div className="card-royal p-12 flex justify-center">
-            <LoadingSpinner message="Profile details load ho rahi hain..." />
+            <LoadingSpinner message="Loading profile details..." />
           </div>
         ) : isError && !effectiveUser ? (
           /* Error State */
           <div className="card-royal p-10 bg-white text-center space-y-4">
             <span className="text-4xl block">⚠️</span>
             <h2 className="font-serif text-2xl font-bold text-[#7A1E3A]">
-              Profile Load Nahi Ho Saki
+              Could Not Load Profile
             </h2>
             <p className="text-sm text-[#7A7A7A] max-w-md mx-auto">
-              {error?.message || 'Server se connect karne me dikkat aayi. Kripya punah prayas karein.'}
+              {error?.message || 'Could not connect to the server. Please try again.'}
             </p>
             <Button variant="primary" size="md" onClick={() => refetch()}>
               Retry Loading 🔄

@@ -26,7 +26,7 @@ export default function LandingPage() {
           {/* Top Tag badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FFF9F2] border border-[#C9A24B] shadow-xs text-xs font-semibold text-[#7A1E3A] tracking-wider uppercase">
             <span>✨</span>
-            <span>Next-Gen Royal Wedding Invitations</span>
+            <span>Next-Gen Wedding Invitations</span>
           </div>
 
           {/* Main Headline (Playfair Display) */}
@@ -83,7 +83,7 @@ export default function LandingPage() {
             How ShaadiPage Works
           </h2>
           <p className="text-[#7A7A7A] text-sm sm:text-base">
-            Apne wedding day ko digitally memorable banana ab behad aasan hai.
+            Making your wedding day digitally memorable is now incredibly easy.
           </p>
         </div>
 
@@ -99,7 +99,7 @@ export default function LandingPage() {
               Fill Your Wedding Details
             </h3>
             <p className="text-sm text-[#7A7A7A] leading-relaxed">
-              Dulha-Dulhan ke naam, shadi ki tareekh, venue, photo aur apni pyari love story submit karein.
+              Submit the groom and bride names, wedding date, venue, photo, and your precious love story.
             </p>
           </div>
 
@@ -112,7 +112,7 @@ export default function LandingPage() {
               AI Generates Your Page
             </h3>
             <p className="text-sm text-[#7A7A7A] leading-relaxed">
-              Ek single click me hamara intelligent engine aapke liye royal themed wedding website ready kar deta hai.
+              With a single click, our intelligent engine prepares a beautiful wedding website for you.
             </p>
           </div>
 
@@ -125,7 +125,7 @@ export default function LandingPage() {
               Share With Loved Ones
             </h3>
             <p className="text-sm text-[#7A7A7A] leading-relaxed">
-              Apna personalized public link WhatsApp, Instagram aur digital cards par friends aur family ke saath share karein.
+              Share your personalized public link on WhatsApp, Instagram, and digital cards with friends and family.
             </p>
           </div>
 
@@ -138,13 +138,13 @@ export default function LandingPage() {
           
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
             <p className="text-xs uppercase font-bold tracking-widest text-[#C9A24B]">
-              Royal Experience
+              Elegant Experience
             </p>
             <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#7A1E3A]">
               Designed for Memorable Celebrations
             </h2>
             <p className="text-[#7A7A7A] text-sm sm:text-base">
-              Har shaadi anokhi hoti hai, aur aapki digital invitation bhi anokhi honi chahiye.
+              Every wedding is unique, and your digital invitation should be too.
             </p>
           </div>
 
@@ -154,10 +154,10 @@ export default function LandingPage() {
             <div className="p-6 rounded-2xl border border-[#EADCC9] bg-[#FFF9F2]/40 hover:bg-[#FFF9F2] transition-colors">
               <span className="text-3xl mb-4 block">👑</span>
               <h3 className="font-serif text-lg font-bold text-[#7A1E3A] mb-2">
-                Royal Aesthetics
+                Elegant Aesthetics
               </h3>
               <p className="text-sm text-[#7A7A7A]">
-                Deep Royal Maroon aur Beaten Gold borders jo aapki celebration ko shaahi ehsaas dete hain.
+                Deep maroon and beaten gold borders that give your celebration a rich, festive feel.
               </p>
             </div>
 
@@ -168,7 +168,7 @@ export default function LandingPage() {
                 Mobile & Tablet Friendly
               </h3>
               <p className="text-sm text-[#7A7A7A]">
-                Aapke mehman chahe phone par dekhein ya laptop par, design hamesha flawless dikhega.
+                Whether your guests view on a phone or a laptop, the design always looks flawless.
               </p>
             </div>
 
@@ -179,7 +179,7 @@ export default function LandingPage() {
                 Instant Page Regeneration
               </h3>
               <p className="text-sm text-[#7A7A7A]">
-                Agar koi details badalni ho to kabhi bhi edit karein aur naye updates instant live paayein.
+                If any details change, edit them any time and see new updates live instantly.
               </p>
             </div>
 
@@ -190,7 +190,7 @@ export default function LandingPage() {
                 One-Click Social Sharing
               </h3>
               <p className="text-sm text-[#7A7A7A]">
-                WhatsApp aur social media ke liye direct shareable link jise koi bhi browser me khol sakta hai.
+                A direct shareable link for WhatsApp and social media that anyone can open in a browser.
               </p>
             </div>
 
@@ -201,7 +201,7 @@ export default function LandingPage() {
                 Privacy Controls
               </h3>
               <p className="text-sm text-[#7A7A7A]">
-                Aap decide karein ki aapka wedding page public rahega ya private.
+                You decide whether your wedding page stays public or private.
               </p>
             </div>
 
@@ -212,7 +212,7 @@ export default function LandingPage() {
                 Couple Photo Showcase
               </h3>
               <p className="text-sm text-[#7A7A7A]">
-                High-resolution couple portrait upload karein jo landing banner par beautifully fit hota hai.
+                Upload a high-resolution couple portrait that fits beautifully on the landing banner.
               </p>
             </div>
 

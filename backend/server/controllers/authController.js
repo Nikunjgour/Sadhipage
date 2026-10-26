@@ -41,7 +41,7 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({
         success: false,
         data: null,
-        message: 'Kripya apna name, email aur password teeno provide karein.',
+        message: 'Please provide name, email, and password.',
       });
     }
 
@@ -51,7 +51,7 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({
         success: false,
         data: null,
-        message: 'Kripya ek valid email address enter karein.',
+        message: 'Please enter a valid email address.',
       });
     }
 
@@ -60,7 +60,7 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({
         success: false,
         data: null,
-        message: 'Password kam se kam 6 characters ka hona chahiye.',
+        message: 'Password must be at least 6 characters long.',
       });
     }
 
@@ -70,7 +70,7 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({
         success: false,
         data: null,
-        message: 'Is email address se user pehle se registered hai.',
+        message: 'A user is already registered with this email address.',
       });
     }
 
@@ -103,14 +103,14 @@ export const registerUser = async (req, res) => {
       // Backward compatibility ke liye top-level fields bhi rakhe hain
       token,
       user: userData,
-      message: 'User registration successful ho gaya!',
+      message: 'User registration successful!',
     });
   } catch (error) {
     console.error('[registerUser Error]:', error.message);
     return res.status(500).json({
       success: false,
       data: null,
-      message: 'Registration ke dauran server error aaya.',
+      message: 'Server error during registration.',
       error: error.message,
     });
   }
@@ -132,7 +132,7 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({
         success: false,
         data: null,
-        message: 'Login karne ke liye email aur password dono daalna zaroori hai.',
+        message: 'Both email and password are required to log in.',
       });
     }
 
@@ -142,7 +142,7 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({
         success: false,
         data: null,
-        message: 'Galat email ya password. Kripya check karein.',
+        message: 'Invalid email or password. Please check your credentials.',
       });
     }
 
@@ -152,7 +152,7 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({
         success: false,
         data: null,
-        message: 'Galat email ya password. Kripya check karein.',
+        message: 'Invalid email or password. Please check your credentials.',
       });
     }
 
@@ -175,14 +175,14 @@ export const loginUser = async (req, res) => {
       },
       token,
       user: userData,
-      message: 'Login successfully ho gaya!',
+      message: 'Login successful!',
     });
   } catch (error) {
     console.error('[loginUser Error]:', error.message);
     return res.status(500).json({
       success: false,
       data: null,
-      message: 'Login ke dauran server error aaya.',
+      message: 'Server error during login.',
       error: error.message,
     });
   }
@@ -204,7 +204,7 @@ export const getProfile = async (req, res) => {
       return res.status(404).json({
         success: false,
         data: null,
-        message: 'User profile database me nahi mili.',
+        message: 'User profile not found.',
       });
     }
 
@@ -215,14 +215,14 @@ export const getProfile = async (req, res) => {
         user,
       },
       user,
-      message: 'User profile successfully fetch ho gayi.',
+      message: 'User profile fetched successfully.',
     });
   } catch (error) {
     console.error('[getProfile Error]:', error.message);
     return res.status(500).json({
       success: false,
       data: null,
-      message: 'User profile fetch karne me server error aaya.',
+      message: 'Server error while fetching user profile.',
       error: error.message,
     });
   }

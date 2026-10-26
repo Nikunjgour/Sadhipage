@@ -53,7 +53,7 @@ export default function AIGenerationPage() {
   const prevStatusRef = useRef(null);
   useEffect(() => {
     if (prevStatusRef.current === 'generating' && status === 'done') {
-      addToast('Aapka Royal Wedding Page successfully generate ho gaya! ✨', 'success');
+      addToast('Your Wedding Page has been generated successfully! ✨', 'success');
       queryClient.invalidateQueries({ queryKey: ['myWedding'] });
       queryClient.invalidateQueries({ queryKey: ['myWeddingRsvps'] });
     }
@@ -84,7 +84,7 @@ export default function AIGenerationPage() {
     } catch (err) {
       console.error('AI generation error:', err);
       // Requirement: server ka apna message dikhao (429/500), generic text nahi
-      const message = err.message || 'AI generation me samasya aayi. Kripya punah prayas karein.';
+      const message = err.message || 'Something went wrong while generating. Please try again.';
       setPostError(message);
       addToast(message, 'error');
     } finally {
@@ -96,7 +96,7 @@ export default function AIGenerationPage() {
   // Banner error: 'failed' status par generationError, POST par postError
   const bannerError =
     status === 'failed'
-      ? wedding?.generationError || 'Generation fail ho gayi hai.'
+      ? wedding?.generationError || 'Generation failed.'
       : postError;
 
   return (
@@ -111,13 +111,13 @@ export default function AIGenerationPage() {
             AI Wedding Page Generator ✨
           </h1>
           <p className="text-sm text-[#7A7A7A] mt-1">
-            Hamara AI model Royal Vows design system aur typography ke saath aapka digital page build karega.
+            Our AI builds your digital wedding page with a refined design system and elegant typography.
           </p>
         </div>
 
         {pageLoading && !wedding ? (
           <div className="card-royal p-12 flex justify-center">
-            <LoadingSpinner message="Wedding information load ho rahi hai..." />
+            <LoadingSpinner message="Loading wedding information..." />
           </div>
         ) : !wedding?.brideName ? (
           /* NOT_CREATED state: user ne details nahi bhari hain ya page delete ho chuka hai */
@@ -127,7 +127,7 @@ export default function AIGenerationPage() {
               Wedding Details Missing
             </h2>
             <p className="text-sm text-[#7A7A7A] max-w-md mx-auto">
-              Page generate karne se pehle kripya couple details, venue, aur tareekh submit karein.
+              Please submit couple details, venue, and date before generating your page.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link to="/wedding/details">
@@ -240,7 +240,7 @@ export default function AIGenerationPage() {
                       AI is designing your page…
                     </h3>
                     <p className="text-sm text-[#7A7A7A] max-w-md mx-auto">
-                      AI page bana raha hai, 1-2 minute lag sakte hain...
+                      AI is building your page, this may take 1-2 minutes...
                     </p>
                   </div>
                 </div>
@@ -252,10 +252,10 @@ export default function AIGenerationPage() {
                   </div>
                   <div>
                     <h3 className="font-serif text-2xl font-bold text-[#7A1E3A]">
-                      Generation Fail Ho Gayi
+                      Generation Failed
                     </h3>
                     <p className="text-sm text-[#7A7A7A] mt-1 max-w-md mx-auto">
-                      Kripya dobara try karein ya thodi der baad aa jayein.
+                      Please try again or come back in a little while.
                     </p>
                   </div>
 
@@ -284,10 +284,10 @@ export default function AIGenerationPage() {
                   </div>
                   <div>
                     <h3 className="font-serif text-2xl font-bold text-[#7A1E3A]">
-                      Your Royal Page is Ready!
+                      Your Wedding Page is Ready!
                     </h3>
                     <p className="text-sm text-[#7A7A7A] mt-1 max-w-md mx-auto">
-                      AI ne aapka wedding page generate kar diya hai. Ab aap ise preview aur share kar sakte hain.
+                      AI has generated your wedding page. You can now preview and share it.
                     </p>
                   </div>
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
@@ -323,7 +323,7 @@ export default function AIGenerationPage() {
                       Ready to Build Your Digital Invitation?
                     </h3>
                     <p className="text-sm text-[#7A7A7A] mt-1 max-w-md mx-auto">
-                      Click the button below to allow our AI to generate a complete responsive royal wedding website.
+                      Click the button below to allow our AI to generate a complete responsive wedding website.
                     </p>
                   </div>
 

@@ -50,7 +50,7 @@ export default function MyWeddingPagePreview() {
     if (!publicShareUrl) return;
     navigator.clipboard.writeText(publicShareUrl);
     setCopied(true);
-    addToast('Wedding URL clipboard me copy ho gaya! 🔗', 'success');
+    addToast('Wedding URL copied to clipboard! 🔗', 'success');
     setTimeout(() => setCopied(false), 3000);
   };
 
@@ -59,14 +59,14 @@ export default function MyWeddingPagePreview() {
     try {
       setDeleting(true);
       await deleteWedding();
-      addToast('Aapka wedding project safaltapoorvak delete ho gaya.', 'success');
+      addToast('Your wedding project has been deleted successfully.', 'success');
       // Query cache invalidate kiya — UI turant NOT_CREATED state par reset ho jaye
       queryClient.invalidateQueries({ queryKey: ['myWedding'] });
       queryClient.invalidateQueries({ queryKey: ['myWeddingRsvps'] });
       setDeleteModalOpen(false);
       navigate('/dashboard');
     } catch (err) {
-      addToast(err.message || 'Delete karne me asafal rahe', 'error');
+      addToast(err.message || 'Failed to delete', 'error');
     } finally {
       setDeleting(false);
     }
@@ -164,7 +164,7 @@ export default function MyWeddingPagePreview() {
         {/* Preview Frame Container */}
         <div className="flex-1 bg-gray-100 flex items-center justify-center p-2 sm:p-4 overflow-auto">
           {loading ? (
-            <LoadingSpinner message="Wedding preview load ho raha hai..." />
+            <LoadingSpinner message="Loading wedding preview..." />
           ) : !htmlContent ? (
             <div className="card-royal p-8 text-center max-w-md bg-white">
               <span className="text-4xl block mb-2">✨</span>
@@ -172,7 +172,7 @@ export default function MyWeddingPagePreview() {
                 No Generated Page Found
               </h3>
               <p className="text-xs text-[#7A7A7A] mb-6">
-                Aapne abhi tak wedding webpage generate nahi kiya hai. AI Generator par click karein.
+                You have not generated a wedding page yet. Click the AI Generator to get started.
               </p>
               <Link to="/wedding/generate">
                 <Button variant="primary">
@@ -218,7 +218,7 @@ export default function MyWeddingPagePreview() {
       >
         <div className="space-y-4">
           <p className="text-sm text-[#2B2B2B]">
-            Kya aap sach me apna wedding project delete karna chahte hain? Isse aapka saara data aur live link permanently remove ho jayega.
+            Are you sure you want to delete your wedding project? This will permanently remove all your data and the live link.
           </p>
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#EADCC9]">
             <Button
@@ -235,7 +235,7 @@ export default function MyWeddingPagePreview() {
               onClick={handleDeleteConfirm}
               loading={deleting}
             >
-              Haan, Delete Karein
+              Yes, Delete
             </Button>
           </div>
         </div>

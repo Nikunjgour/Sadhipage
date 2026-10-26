@@ -40,13 +40,13 @@ export default function LoginPage() {
   const validateForm = () => {
     const newErrors = {};
     if (!formData.email.trim()) {
-      newErrors.email = 'Email address enter karna zaruri hai';
+      newErrors.email = 'Email address is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Valid email address enter karein';
+      newErrors.email = 'Please enter a valid email address';
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password enter karna zaruri hai';
+      newErrors.password = 'Password is required';
     }
 
     setErrors(newErrors);
@@ -67,12 +67,12 @@ export default function LoginPage() {
       const userData = response.user || response.data?.user || { role: response.role || 'user' };
 
       if (!token) {
-        throw new Error('Authentication token praapt nahi hua');
+        throw new Error('Authentication token was not received');
       }
 
       // AuthContext me session save karo
       login(token, userData);
-      addToast('Login safaltapoorvak ho gaya!', 'success');
+      addToast('Login successful!', 'success');
 
       // User role ke hisaab se redirect karo
       const role = userData.role || 'user';
@@ -83,7 +83,7 @@ export default function LoginPage() {
         navigate(from, { replace: true });
       }
     } catch (error) {
-      const msg = error.message || 'Login karne me dikkat aayi. Kripya credentials check karein.';
+      const msg = error.message || 'Login failed. Please check your credentials.';
       addToast(msg, 'error');
     } finally {
       setLoading(false);
@@ -106,7 +106,7 @@ export default function LoginPage() {
               Welcome Back
             </h1>
             <p className="text-sm text-[#7A7A7A] mt-1">
-              Apne ShaadiPage account me sign in karein
+              Sign in to your ShaadiPage account
             </p>
           </div>
 
@@ -151,7 +151,7 @@ export default function LoginPage() {
 
           {/* Footer Link */}
           <div className="mt-6 text-center text-sm text-[#7A7A7A]">
-            Naya account banana chahte hain?{' '}
+            Want to create a new account?{' '}
             <Link to="/register" className="font-semibold text-[#7A1E3A] hover:underline">
               Register Here
             </Link>

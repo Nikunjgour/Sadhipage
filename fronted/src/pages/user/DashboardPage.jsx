@@ -97,7 +97,7 @@ export default function DashboardPage() {
     if (!publicShareUrl) return;
     navigator.clipboard.writeText(publicShareUrl);
     setCopied(true);
-    addToast('Wedding link clipboard me copy ho gaya! ✨', 'success');
+    addToast('Wedding link copied to clipboard! ✨', 'success');
     setTimeout(() => setCopied(false), 3000);
   };
 
@@ -113,10 +113,10 @@ export default function DashboardPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#7A1E3A]">
-              Namaste, {user?.name || 'Friend'}! 🌸
+              Hello, {user?.name || 'Friend'}! 🌸
             </h1>
             <p className="text-sm text-[#7A7A7A] mt-1">
-              Welcome to your personal Royal Wedding control center.
+              Welcome to your personal wedding control center.
             </p>
           </div>
 
@@ -177,14 +177,14 @@ export default function DashboardPage() {
                       </span>
                       {isGenerating && (
                         <span className="text-xs font-semibold text-[#7A1E3A] animate-pulse">
-                          AI page bana raha hai, yeh status khud update ho jayega...
+                          AI is building your page, this status will update automatically...
                         </span>
                       )}
                     </div>
 
                     <h2 className="font-serif text-2xl font-bold text-[#7A1E3A] mt-1">
                       {currentStatus === 'PAGE_GENERATED'
-                        ? `${wedding?.brideName} & ${wedding?.groomName}'s Royal Page`
+                        ? `${wedding?.brideName} & ${wedding?.groomName}'s Wedding Page`
                         : currentStatus === 'DETAILS_SAVED'
                         ? 'Wedding Information Ready for AI Generation'
                         : 'Start Your Wedding Invitation Website'}
@@ -192,10 +192,10 @@ export default function DashboardPage() {
 
                     <p className="text-sm text-[#7A7A7A] mt-1 max-w-2xl">
                       {currentStatus === 'PAGE_GENERATED'
-                        ? 'Aapka wedding page safalta-poorvak generate ho chuka hai. Aap ise preview kar sakte hain ya guests ke sath share kar sakte hain.'
+                        ? 'Your wedding page has been generated successfully. You can preview it or share it with your guests.'
                         : currentStatus === 'DETAILS_SAVED'
-                        ? 'Aapne basic details save kar li hain! Ab AI Generation page par jakar apna royal theme wedding page banayein.'
-                        : 'Pehla kadam: Apni wedding details (Dulha, Dulhan, Date, Venue aur Love Story) fill karein.'}
+                        ? 'You have saved your basic details! Now go to the AI Generation page to generate your wedding page.'
+                        : 'Step 1: Fill in your wedding details (Groom, Bride, Date, Venue and Love Story).'}
                     </p>
                   </div>
                 </div>
@@ -255,7 +255,7 @@ export default function DashboardPage() {
                     Fill Details
                   </h4>
                   <p className="text-xs text-[#7A7A7A] mt-1 leading-relaxed">
-                    Couple details, wedding date, venue, photo & story submit karein.
+                    Submit couple details, wedding date, venue, photo & story.
                   </p>
                   <div className="mt-4">
                     <Link to="/wedding/details" className="text-xs font-bold text-[#7A1E3A] hover:underline">
@@ -286,7 +286,7 @@ export default function DashboardPage() {
                     AI Generation
                   </h4>
                   <p className="text-xs text-[#7A7A7A] mt-1 leading-relaxed">
-                    AI engine aapke data ko Royal Vows theme me convert karta hai.
+                    The AI engine converts your data into a beautiful wedding theme.
                   </p>
                   <div className="mt-4">
                     <Link
@@ -387,7 +387,7 @@ export default function DashboardPage() {
                     Public Invitation Link
                   </h3>
                   <p className="text-xs text-[#7A7A7A]">
-                    Aapke mehmaan is link ke dwara aapki wedding website dekh sakte hain.
+                    Your guests can view your wedding website through this link.
                   </p>
                 </div>
 
@@ -429,7 +429,7 @@ export default function DashboardPage() {
                 )}
 
                 <div className="text-[11px] text-[#7A7A7A] italic border-t border-[#EADCC9] pt-3">
-                  Tip: Copy karke WhatsApp groups ya e-invites par directly send karein!
+                  Tip: Copy it and send it directly on WhatsApp groups or e-invites!
                 </div>
               </div>
 

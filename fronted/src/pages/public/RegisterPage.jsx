@@ -39,25 +39,25 @@ export default function RegisterPage() {
     const newErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = 'Apna poora naam enter karein';
+      newErrors.name = 'Please enter your full name';
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email address enter karna zaruri hai';
+      newErrors.email = 'Email address is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Valid email address enter karein';
+      newErrors.email = 'Please enter a valid email address';
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password enter karna zaruri hai';
+      newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password kam se kam 6 characters ka hona chahiye';
+      newErrors.password = 'Password must be at least 6 characters long';
     }
 
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Password confirm karna zaruri hai';
+      newErrors.confirmPassword = 'Please confirm your password';
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Dono passwords match nahi kar rahe hain';
+      newErrors.confirmPassword = 'The two passwords do not match';
     }
 
     setErrors(newErrors);
@@ -78,11 +78,11 @@ export default function RegisterPage() {
         password: formData.password,
       });
 
-      addToast('Account ban gaya! Ab aap login kar sakte hain.', 'success');
+      addToast('Account created! You can now log in.', 'success');
       // Login page par redirect karte hain
       navigate('/login');
     } catch (error) {
-      const msg = error.message || 'Registration me dikkat aayi. Kripya doobara prayas karein.';
+      const msg = error.message || 'Registration failed. Please try again.';
       addToast(msg, 'error');
     } finally {
       setLoading(false);
@@ -105,7 +105,7 @@ export default function RegisterPage() {
               Create an Account
             </h1>
             <p className="text-sm text-[#7A7A7A] mt-1">
-              Start building your royal wedding page today
+              Start building your wedding page today
             </p>
           </div>
 
@@ -174,7 +174,7 @@ export default function RegisterPage() {
 
           {/* Footer Link */}
           <div className="mt-6 text-center text-sm text-[#7A7A7A]">
-            Pehle se account hai?{' '}
+            Already have an account?{' '}
             <Link to="/login" className="font-semibold text-[#7A1E3A] hover:underline">
               Log In
             </Link>

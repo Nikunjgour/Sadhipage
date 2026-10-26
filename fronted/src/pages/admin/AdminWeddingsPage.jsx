@@ -84,7 +84,7 @@ export default function AdminWeddingsPage() {
       setIsUpdating(true);
       const id = editWedding._id || editWedding.id;
       await adminUpdateWedding(id, editFormData);
-      addToast('Wedding details successfully update ho gayi!', 'success');
+      addToast('Wedding details updated successfully!', 'success');
       setEditWedding(null);
       // Live query invalidation
       queryClient.invalidateQueries({ queryKey: ['adminWeddings'] });
@@ -105,7 +105,7 @@ export default function AdminWeddingsPage() {
       const res = await adminDeleteWedding(id);
       const rsvpsCount = res?.deletedRsvps ?? res?.data?.deletedRsvps ?? 0;
       addToast(
-        res?.message || `Wedding project aur ${rsvpsCount} RSVPs delete ho gaye.`,
+        res?.message || `Wedding project and ${rsvpsCount} RSVPs deleted.`,
         'success'
       );
       setDeleteTarget(null);
@@ -170,12 +170,12 @@ export default function AdminWeddingsPage() {
         {/* Weddings Table / Mobile Cards */}
         {loading ? (
           <div className="card-royal p-12 flex justify-center">
-            <LoadingSpinner message="Weddings load ho rahi hain..." />
+            <LoadingSpinner message="Loading weddings..." />
           </div>
         ) : filteredWeddings.length === 0 ? (
           <div className="card-royal p-12 text-center bg-white">
             <p className="text-base text-[#7A7A7A]">
-              Koi wedding record nahi mila.
+              No wedding records found.
             </p>
           </div>
         ) : (
@@ -404,7 +404,7 @@ export default function AdminWeddingsPage() {
       >
         <div className="space-y-4">
           <p className="text-sm text-[#2B2B2B]">
-            Kya aap sach me <strong>{deleteTarget?.brideName} & {deleteTarget?.groomName}</strong> ka wedding page delete karna chahte hain? Is wedding page ko delete karne par iske saare RSVPs bhi hamesha ke liye delete ho jayenge.
+            Are you sure you want to delete the wedding page for <strong>{deleteTarget?.brideName} & {deleteTarget?.groomName}</strong>? Deleting this wedding page will also permanently delete all of its RSVPs.
           </p>
           <div className="pt-4 border-t border-[#EADCC9] flex justify-end gap-3">
             <Button

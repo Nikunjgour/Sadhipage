@@ -15,7 +15,7 @@ export default function NotFoundPage() {
           Page Not Found
         </h1>
         <p className="text-sm text-[#7A7A7A] leading-relaxed mb-8">
-          Aap jis page ko dhoondh rahe hain wo maujood nahi hai ya move ho chuka hai.
+          The page you are looking for does not exist or has been moved.
         </p>
         <Link to="/">
           <Button variant="primary" size="lg" className="w-full">

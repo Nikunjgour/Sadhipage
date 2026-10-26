@@ -23,7 +23,7 @@ const getCloudinary = () => {
   const missing = Object.keys(config).filter((key) => !config[key]);
   if (missing.length > 0) {
     const err = new Error(
-      `Server config error: backend/.env me ye variables missing hain: ${missing.join(', ')}. Cloud name, api key aur api secret teeno chahiye photo upload ke liye.`
+      `Server config error: The following variables are missing in backend/.env: ${missing.join(', ')}. Cloud name, API key, and API secret are all required for photo uploads.`
     );
     err.statusCode = 500;
     throw err;
@@ -84,7 +84,7 @@ export const createWeddingInfo = async (req, res) => {
       return res.status(400).json({
         success: false,
         data: null,
-        message: 'Kripya brideName, groomName, weddingDate aur venue zaroor provide karein.',
+        message: 'Please provide brideName, groomName, weddingDate, and venue.',
       });
     }
 
@@ -95,7 +95,7 @@ export const createWeddingInfo = async (req, res) => {
         success: false,
         data: { wedding: existingWedding },
         wedding: existingWedding,
-        message: 'Aapka wedding page pehle se bana hua hai. Agar badalna hai toh update endpoint use karein.',
+        message: 'Your wedding page already exists. Please use the update endpoint to make changes.',
       });
     }
 
@@ -106,7 +106,7 @@ export const createWeddingInfo = async (req, res) => {
         return res.status(400).json({
           success: false,
           data: null,
-          message: 'Ye shareSlug pehle se kisi aur ne le rakha hai. Kripya doosra slug chunein.',
+          message: 'This shareSlug is already taken. Please choose another slug.',
         });
       }
     }
@@ -129,14 +129,14 @@ export const createWeddingInfo = async (req, res) => {
       success: true,
       data: { wedding },
       wedding,
-      message: 'Wedding page details successfully save ho gaye!',
+      message: 'Wedding page details saved successfully!',
     });
   } catch (error) {
     console.error('[createWeddingInfo Error]:', error.message);
     return res.status(500).json({
       success: false,
       data: null,
-      message: 'Wedding profile create karne me server error aaya.',
+      message: 'A server error occurred while creating the wedding profile.',
       error: error.message,
     });
   }
@@ -161,7 +161,7 @@ export const getMyWeddingPage = async (req, res) => {
       return res.status(404).json({
         success: false,
         data: null,
-        message: 'Aapka koi wedding page nahi mila. Kripya pehle naya wedding page banayein.',
+        message: 'No wedding page found. Please create a wedding page first.',
       });
     }
 
@@ -174,14 +174,14 @@ export const getMyWeddingPage = async (req, res) => {
       data: { wedding, rsvps },
       wedding,
       rsvps,
-      message: 'Wedding details successfully praapt ho gayi.',
+      message: 'Wedding details retrieved successfully.',
     });
   } catch (error) {
     console.error('[getMyWeddingPage Error]:', error.message);
     return res.status(500).json({
       success: false,
       data: null,
-      message: 'Wedding page retrieve karne me error aaya.',
+      message: 'An error occurred while retrieving the wedding page.',
       error: error.message,
     });
   }
@@ -209,7 +209,7 @@ export const updateWeddingInfo = async (req, res) => {
     if (!wedding) {
       return res.status(404).json({
         success: false,
-        message: 'Update karne ke liye wedding page nahi mila.',
+        message: 'Wedding page not found to update.',
       });
     }
 
@@ -233,7 +233,7 @@ export const updateWeddingInfo = async (req, res) => {
       if (slugExists) {
         return res.status(400).json({
           success: false,
-          message: 'Ye shareSlug pehle se kisi aur wedding page me use ho raha hai.',
+          message: 'This shareSlug is already in use by another wedding page.',
         });
       }
       wedding.shareSlug = shareSlug.toLowerCase();
@@ -258,14 +258,14 @@ export const updateWeddingInfo = async (req, res) => {
       success: true,
       data: { wedding: updatedWedding },
       wedding: updatedWedding,
-      message: 'Wedding page details successfully update ho gaye!',
+      message: 'Wedding page details updated successfully!',
     });
   } catch (error) {
     console.error('[updateWeddingInfo Error]:', error.message);
     return res.status(500).json({
       success: false,
       data: null,
-      message: 'Wedding details update karne me server error aaya.',
+      message: 'A server error occurred while updating wedding details.',
       error: error.message,
     });
   }
@@ -287,7 +287,7 @@ export const deleteWeddingInfo = async (req, res) => {
       return res.status(404).json({
         success: false,
         data: null,
-        message: 'Delete karne ke liye koi wedding page nahi mila.',
+        message: 'No wedding page found to delete.',
       });
     }
 
@@ -306,14 +306,14 @@ export const deleteWeddingInfo = async (req, res) => {
         deletedRsvps,
       },
       deletedRsvps,
-      message: 'Wedding page successfully delete ho gaya!',
+      message: 'Wedding page deleted successfully!',
     });
   } catch (error) {
     console.error('[deleteWeddingInfo Error]:', error.message);
     return res.status(500).json({
       success: false,
       data: null,
-      message: 'Wedding page delete karne me server error aaya: ' + error.message,
+      message: 'A server error occurred while deleting the wedding page: ' + error.message,
       error: error.message,
     });
   }
@@ -334,7 +334,7 @@ export const getPublicWeddingPage = async (req, res) => {
       return res.status(400).json({
         success: false,
         data: null,
-        message: 'shareSlug parameter dena zaroori hai.',
+        message: 'The shareSlug parameter is required.',
       });
     }
 
@@ -347,7 +347,7 @@ export const getPublicWeddingPage = async (req, res) => {
       return res.status(404).json({
         success: false,
         data: null,
-        message: 'Is link ke sath koi wedding page nahi mila.',
+        message: 'No wedding page found with this link.',
       });
     }
 
@@ -357,7 +357,7 @@ export const getPublicWeddingPage = async (req, res) => {
         success: false,
         data: { isPublic: false },
         isPublic: false,
-        message: 'Ye wedding page private hai aur public ke liye accessible nahi hai.',
+        message: 'This wedding page is private and not accessible to the public.',
       });
     }
 
@@ -366,14 +366,14 @@ export const getPublicWeddingPage = async (req, res) => {
       success: true,
       data: { wedding },
       wedding,
-      message: 'Public wedding page successfully fetch ho gaya.',
+      message: 'Public wedding page fetched successfully.',
     });
   } catch (error) {
     console.error('[getPublicWeddingPage Error]:', error.message);
     return res.status(500).json({
       success: false,
       data: null,
-      message: 'Public wedding page load karne me error aaya.',
+      message: 'An error occurred while loading the public wedding page.',
       error: error.message,
     });
   }
@@ -393,7 +393,7 @@ export const uploadWeddingPhoto = async (req, res) => {
       return res.status(400).json({
         success: false,
         data: null,
-        message: 'Kripya "photo" field name ke sath image file attach karein.',
+        message: 'Please attach an image file with the field name "photo".',
       });
     }
 
@@ -423,14 +423,14 @@ export const uploadWeddingPhoto = async (req, res) => {
       },
       photoUrl: secureUrl,
       wedding,
-      message: 'Wedding photo successfully Cloudinary par upload ho gayi!',
+      message: 'Wedding photo uploaded to Cloudinary successfully!',
     });
   } catch (error) {
     console.error('[uploadWeddingPhoto Error]:', error.message);
     // Config error (missing env var) par variable ka naam batata hua clear message
-    const message = /variables missing hain/.test(error.message)
+    const message = /variables are missing/.test(error.message)
       ? error.message
-      : 'Cloudinary par photo upload fail ho gaya.';
+      : 'Photo upload to Cloudinary failed.';
     return res.status(500).json({
       success: false,
       data: null,

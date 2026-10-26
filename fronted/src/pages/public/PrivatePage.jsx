@@ -14,7 +14,7 @@ export default function PrivatePage() {
           Private Wedding Page
         </h1>
         <p className="text-sm text-[#7A7A7A] leading-relaxed mb-8">
-          This wedding page is private or unavailable. Ye page owner ke dwara private mark kiya gaya hai ya temporary roop se band hai.
+          This wedding page is private or unavailable. It has been marked private by the page owner or is temporarily closed.
         </p>
         <Link to="/">
           <Button variant="primary" size="lg" className="w-full">

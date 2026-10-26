@@ -92,7 +92,7 @@ export default function WeddingDetailsFormPage() {
 
     // File size check (5MB limit)
     if (file.size > 5 * 1024 * 1024) {
-      addToast('Photo size 5MB se chhota hona chahiye', 'error');
+      addToast('Photo size must be under 5MB', 'error');
       return;
     }
 
@@ -108,12 +108,12 @@ export default function WeddingDetailsFormPage() {
       const uploadedUrl = res.photoUrl || res.url || res.data?.photoUrl;
       if (uploadedUrl) {
         setFormData((prev) => ({ ...prev, photoUrl: uploadedUrl }));
-        addToast('Photo safaltapoorvak upload ho gayi! 📸', 'success');
+        addToast('Photo uploaded successfully! 📸', 'success');
       }
     } catch (err) {
       console.warn('Photo upload API call failed, using preview:', err);
       // Agar backend upload-photo abhi connect na ho to preview retain karte hain
-      addToast('Photo select ho gayi hai (Local Preview)', 'info');
+      addToast('Photo selected (Local Preview)', 'info');
     } finally {
       setUploadingPhoto(false);
     }
@@ -122,10 +122,10 @@ export default function WeddingDetailsFormPage() {
   // Client validation
   const validate = () => {
     const newErrors = {};
-    if (!formData.brideName.trim()) newErrors.brideName = 'Dulhan ka naam likhna zaruri hai';
-    if (!formData.groomName.trim()) newErrors.groomName = 'Dulhe ka naam likhna zaruri hai';
-    if (!formData.weddingDate) newErrors.weddingDate = 'Shadi ki tareekh chunein';
-    if (!formData.venue.trim()) newErrors.venue = 'Venue location likhna zaruri hai';
+    if (!formData.brideName.trim()) newErrors.brideName = "Bride's name is required";
+    if (!formData.groomName.trim()) newErrors.groomName = "Groom's name is required";
+    if (!formData.weddingDate) newErrors.weddingDate = 'Please choose your wedding date';
+    if (!formData.venue.trim()) newErrors.venue = 'Venue location is required';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -135,7 +135,7 @@ export default function WeddingDetailsFormPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) {
-      addToast('Kripya saare required fields dhyan se bharein', 'error');
+      addToast('Please fill in all required fields carefully', 'error');
       return;
     }
 
@@ -151,12 +151,12 @@ export default function WeddingDetailsFormPage() {
       if (isExisting) {
         // Agar already record hai to PUT /wedding/update call karo
         await updateWedding(payload);
-        addToast('Wedding details update ho gayi hain! 💍', 'success');
+        addToast('Wedding details have been updated! 💍', 'success');
       } else {
         // Pehli baar bana rahe hain to POST /wedding/create call karo
         await createWedding(payload);
         setIsExisting(true);
-        addToast('Wedding details save ho gayi hain! 💍', 'success');
+        addToast('Wedding details have been saved! 💍', 'success');
       }
 
       // NEW: TanStack cache refresh kiya taaki dashboard aur AI page ko fresh data mile
@@ -166,7 +166,7 @@ export default function WeddingDetailsFormPage() {
       navigate('/wedding/generate');
 
     } catch (err) {
-      const msg = err.message || 'Details save karne me truti aayi.';
+      const msg = err.message || 'Something went wrong while saving details.';
       addToast(msg, 'error');
     } finally {
       setSaving(false);
@@ -185,7 +185,7 @@ export default function WeddingDetailsFormPage() {
             {isExisting ? 'Edit Wedding Details ✎' : 'Wedding Information Form 📝'}
           </h1>
           <p className="text-sm text-[#7A7A7A] mt-1">
-            Apni shadi ke bare me jankari bharein. Hamara AI is jankari ko ek royal webpage me convert karega.
+            Fill in the details about your wedding. Our AI will convert this information into a beautiful wedding webpage.
           </p>
         </div>
 
@@ -200,14 +200,14 @@ export default function WeddingDetailsFormPage() {
             <div>
               <h2 className="font-serif text-xl font-bold text-[#7A1E3A] border-b border-[#EADCC9] pb-3 mb-6 flex items-center gap-2">
                 <span>👑</span>
-                <span>The Royal Couple</span>
+                <span>The Wedding Couple</span>
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Input
                   id="brideName"
                   name="brideName"
-                  label="Bride's Name (Dulhan)"
+                  label="Bride's Name"
                   placeholder="e.g. Ananya Sharma"
                   value={formData.brideName}
                   onChange={handleChange}
@@ -218,7 +218,7 @@ export default function WeddingDetailsFormPage() {
                 <Input
                   id="groomName"
                   name="groomName"
-                  label="Groom's Name (Dulha)"
+                  label="Groom's Name"
                   placeholder="e.g. Vikram Malhotra"
                   value={formData.groomName}
                   onChange={handleChange}
@@ -297,7 +297,7 @@ export default function WeddingDetailsFormPage() {
                     Upload High-Resolution Photo
                   </label>
                   <p className="text-xs text-[#7A7A7A]">
-                    PNG, JPG, JPEG (Max 5MB). Ye photo aapke invitation header banner par display hogi.
+                    PNG, JPG, JPEG (Max 5MB). This photo will be displayed on your invitation header banner.
                   </p>
                   <div className="pt-2">
                     <input
@@ -340,7 +340,7 @@ export default function WeddingDetailsFormPage() {
                 placeholder="Share a few lines about your magical journey together... (e.g. 'We met during college in Jaipur, bonded over chai and endless conversations, and decided on forever.')"
                 value={formData.story}
                 onChange={handleChange}
-                helperText="Ye kahani aapke wedding page ke story section me highlight hogi."
+                helperText="This story will be highlighted in the story section of your wedding page."
               />
             </div>
 

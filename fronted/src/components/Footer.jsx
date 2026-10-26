@@ -24,7 +24,7 @@ export default function Footer() {
               Crafting bespoke, timeless digital wedding experiences. Celebrate your sacred bond with elegant invitations, effortless RSVP tracking, and stunning AI-generated wedding websites.
             </p>
             <div className="pt-2 flex items-center gap-4 text-sm text-[#C9A24B]">
-              <span>✦ Royal Aesthetic</span>
+              <span>✦ Elegant Aesthetic</span>
               <span>✦ AI Powered</span>
               <span>✦ Instant Sharing</span>
             </div>

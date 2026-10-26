@@ -29,14 +29,14 @@ export const getAllUsers = async (req, res) => {
       },
       count: users.length,
       users,
-      message: 'Users list successfully fetch ho gayi.',
+      message: 'Users list fetched successfully.',
     });
   } catch (error) {
     console.error('[getAllUsers Error]:', error.message);
     return res.status(500).json({
       success: false,
       data: null,
-      message: 'Users list fetch karne me error aaya.',
+      message: 'Error fetching users list.',
       error: error.message,
     });
   }
@@ -71,14 +71,14 @@ export const getAllWeddingPages = async (req, res) => {
       },
       count: formattedWeddings.length,
       weddings: formattedWeddings,
-      message: 'Weddings list successfully fetch ho gayi.',
+      message: 'Weddings list fetched successfully.',
     });
   } catch (error) {
     console.error('[getAllWeddingPages Error]:', error.message);
     return res.status(500).json({
       success: false,
       data: null,
-      message: 'Wedding pages list fetch karne me error aaya.',
+      message: 'Error fetching wedding pages list.',
       error: error.message,
     });
   }
@@ -102,7 +102,7 @@ export const deleteUser = async (req, res) => {
       return res.status(404).json({
         success: false,
         data: null,
-        message: `ID ${id} wala user database me nahi mila.`,
+        message: `User with ID ${id} was not found.`,
       });
     }
 
@@ -110,7 +110,7 @@ export const deleteUser = async (req, res) => {
     if (target.role === 'admin') {
       return res.status(403).json({
         success: false,
-        message: 'Admin accounts delete nahi kiye ja sakte.',
+        message: 'Admin accounts cannot be deleted.',
       });
     }
 
@@ -138,14 +138,14 @@ export const deleteUser = async (req, res) => {
       },
       deletedWeddings,
       deletedRsvps,
-      message: `User ${target.email} aur uska wedding data (${deletedWeddings} weddings, ${deletedRsvps} RSVPs) successfully delete ho gaya.`,
+      message: `User ${target.email} and associated wedding data (${deletedWeddings} weddings, ${deletedRsvps} RSVPs) were deleted successfully.`,
     });
   } catch (error) {
     console.error('[deleteUser Error]:', error.message);
     return res.status(500).json({
       success: false,
       data: null,
-      message: 'User delete karne me error aaya: ' + error.message,
+      message: 'Error deleting user: ' + error.message,
       error: error.message,
     });
   }
@@ -170,7 +170,7 @@ export const deleteWeddingPage = async (req, res) => {
       return res.status(404).json({
         success: false,
         data: null,
-        message: `ID ${id} wala wedding page nahi mila.`,
+        message: `Wedding page with ID ${id} was not found.`,
       });
     }
 
@@ -188,14 +188,14 @@ export const deleteWeddingPage = async (req, res) => {
         deletedRsvps,
       },
       deletedRsvps,
-      message: `${wedding.brideName} aur ${wedding.groomName} ka wedding page aur ${deletedRsvps} RSVPs delete ho gaye.`,
+      message: `Wedding page for ${wedding.brideName} and ${wedding.groomName} and ${deletedRsvps} RSVPs were deleted successfully.`,
     });
   } catch (error) {
     console.error('[deleteWeddingPage Error]:', error.message);
     return res.status(500).json({
       success: false,
       data: null,
-      message: 'Wedding page delete karne me error aaya: ' + error.message,
+      message: 'Error deleting wedding page: ' + error.message,
       error: error.message,
     });
   }
@@ -258,14 +258,14 @@ export const getAnalytics = async (req, res) => {
         analytics: analyticsPayload,
       },
       analytics: analyticsPayload,
-      message: 'Analytics data successfully calculate ho gaya.',
+      message: 'Analytics data calculated successfully.',
     });
   } catch (error) {
     console.error('[getAnalytics Error]:', error.message);
     return res.status(500).json({
       success: false,
       data: null,
-      message: 'Analytics data calculate karne me server error aaya.',
+      message: 'A server error occurred while calculating analytics data.',
       error: error.message,
     });
   }
@@ -285,15 +285,15 @@ export const updateUserByAdmin = async (req, res) => {
       return res.status(404).json({
         success: false,
         data: null,
-        message: `ID ${id} wala user database me nahi mila.`,
+        message: `User with ID ${id} was not found in the database.`,
       });
     }
 
-    // Admin accounts edit nahi kiye ja sakte
+    // Admin accounts cannot be edited
     if (targetUser.role === 'admin') {
       return res.status(403).json({
         success: false,
-        message: 'Admin accounts edit nahi kiye ja sakte.',
+        message: 'Admin accounts cannot be edited.',
       });
     }
 
@@ -315,14 +315,14 @@ export const updateUserByAdmin = async (req, res) => {
         user: updatedUser,
       },
       user: updatedUser,
-      message: 'User details successfully update ho gayi.',
+      message: 'User details updated successfully.',
     });
   } catch (error) {
     console.error('[updateUserByAdmin Error]:', error.message);
     return res.status(500).json({
       success: false,
       data: null,
-      message: 'User update karne me error aaya.',
+      message: 'An error occurred while updating the user.',
       error: error.message,
     });
   }
@@ -357,7 +357,7 @@ export const updateWeddingByAdmin = async (req, res) => {
       return res.status(404).json({
         success: false,
         data: null,
-        message: `ID ${id} wala wedding page nahi mila.`,
+        message: `Wedding page with ID ${id} was not found.`,
       });
     }
 
@@ -368,14 +368,14 @@ export const updateWeddingByAdmin = async (req, res) => {
         wedding: updatedWedding,
       },
       wedding: updatedWedding,
-      message: 'Wedding page data successfully update ho gaya.',
+      message: 'Wedding page data updated successfully.',
     });
   } catch (error) {
     console.error('[updateWeddingByAdmin Error]:', error.message);
     return res.status(500).json({
       success: false,
       data: null,
-      message: 'Wedding page update karne me error aaya.',
+      message: 'An error occurred while updating the wedding page.',
       error: error.message,
     });
   }
