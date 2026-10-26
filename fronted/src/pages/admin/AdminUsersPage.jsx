@@ -90,9 +90,15 @@ export default function AdminUsersPage() {
       setIsDeleting(true);
       const userId = deleteUserTarget._id || deleteUserTarget.id;
       const res = await adminDeleteUser(userId);
-      addToast(res?.message || 'User delete ho gaya.', 'success');
+      const weddingsCount = res?.deletedWeddings ?? res?.data?.deletedWeddings ?? 0;
+      const rsvpsCount = res?.deletedRsvps ?? res?.data?.deletedRsvps ?? 0;
+      addToast(
+        res?.message || `User delete ho gaya (${weddingsCount} wedding, ${rsvpsCount} RSVPs safalta se hataye gaye).`,
+        'success'
+      );
       setDeleteUserTarget(null);
       queryClient.invalidateQueries({ queryKey: ['adminUsers'] });
+      queryClient.invalidateQueries({ queryKey: ['adminWeddings'] });
       queryClient.invalidateQueries({ queryKey: ['adminAnalytics'] });
     } catch (err) {
       addToast(err.message || 'User delete nahi ho saka', 'error');
@@ -352,7 +358,7 @@ export default function AdminUsersPage() {
       >
         <div className="space-y-4">
           <p className="text-sm text-[#2B2B2B]">
-            Kya aap sach me user <strong>{deleteUserTarget?.name}</strong> ({deleteUserTarget?.email}) ko delete karna chahte hain? Is user ka account aur associated weddings permanently delete ho sakte hain.
+            Kya aap sach me user <strong>{deleteUserTarget?.name}</strong> ({deleteUserTarget?.email}) ko delete karna chahte hain? Is user ko delete karne par uska wedding page aur saare RSVPs bhi hamesha ke liye delete ho jayenge.
           </p>
           <div className="pt-4 border-t border-[#EADCC9] flex justify-end gap-3">
             <Button

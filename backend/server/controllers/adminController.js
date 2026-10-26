@@ -1,6 +1,7 @@
 import User from '../models/User.js';
 import Wedding from '../models/Wedding.js';
 import Rsvp from '../models/Rsvp.js';
+import { deleteWeddingsAndRsvps } from '../utils/cascadeHelper.js';
 
 /**
  * getAllUsers Controller (Admin Only):
@@ -94,10 +95,10 @@ export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Pehle target user load karte hain
-    const user = await User.findById(id);
+    // (a) Pehle target user load karte hain
+    const target = await User.findById(id);
 
-    if (!user) {
+    if (!target) {
       return res.status(404).json({
         success: false,
         data: null,
@@ -106,35 +107,45 @@ export const deleteUser = async (req, res) => {
     }
 
     // Admin accounts delete nahi ho sakte (covers self-delete aur koi bhi admin)
-    if (user.role === 'admin') {
+    if (target.role === 'admin') {
       return res.status(403).json({
         success: false,
         message: 'Admin accounts delete nahi kiye ja sakte.',
       });
     }
 
-    // Database se user document delete kiya
-    await User.findByIdAndDelete(id);
+    // (b) User ke saare wedding documents dhoondhte hain (old data me 1 se zyada bhi ho sakti hain)
+    const weddings = await Wedding.find({ user: target._id });
 
-    // Cascading cleanup: is user ke wedding pages aur unke RSVP documents bhi
-    // delete kar rahe hain (Rsvp wedding _id se linked hai, isliye pehle ids nikalo)
-    const ownedWeddings = await Wedding.find({ user: id }).select('_id');
-    await Rsvp.deleteMany({ wedding: { $in: ownedWeddings.map((w) => w._id) } });
-    await Wedding.deleteMany({ user: id });
+    // (c) Unke _id aur shareSlug values collect karte hain
+    const weddingIds = weddings.map((w) => w._id);
+    const slugs = weddings.map((w) => w.shareSlug).filter(Boolean);
 
+    // (d) & (e) RSVPs aur weddings ko shared helper se delete karte hain
+    const { deletedWeddings, deletedRsvps } = await deleteWeddingsAndRsvps(weddingIds, slugs);
 
-    // CHANGED: Consistent { success, data, message } response
+    // (f) Finally user document delete karte hain
+    await User.findByIdAndDelete(target._id);
+
+    // Console logging format
+    console.log(`[Cascade] deleted ${deletedWeddings} weddings and ${deletedRsvps} RSVPs for user ${target._id}`);
+
     return res.status(200).json({
       success: true,
-      data: null,
-      message: `User ${user.email} aur uska wedding data successfully delete ho gaya.`,
+      data: {
+        deletedWeddings,
+        deletedRsvps,
+      },
+      deletedWeddings,
+      deletedRsvps,
+      message: `User ${target.email} aur uska wedding data (${deletedWeddings} weddings, ${deletedRsvps} RSVPs) successfully delete ho gaya.`,
     });
   } catch (error) {
     console.error('[deleteUser Error]:', error.message);
     return res.status(500).json({
       success: false,
       data: null,
-      message: 'User delete karne me error aaya.',
+      message: 'User delete karne me error aaya: ' + error.message,
       error: error.message,
     });
   }
@@ -142,7 +153,8 @@ export const deleteUser = async (req, res) => {
 
 /**
  * deleteWeddingPage Controller (Admin Only):
- * Kisi bhi wedding page ko uski MongoDB document ID se permanently delete karta hai.
+ * Kisi bhi wedding page ko uski MongoDB document ID se permanently delete karta hai
+ * aur uske saare RSVP responses ko bhi cascade delete karta hai.
  * 
  * @param {Object} req - Request object jisme params me wedding ID hai
  * @param {Object} res - Response object
@@ -151,8 +163,8 @@ export const deleteWeddingPage = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Wedding collection se record delete kiya
-    const wedding = await Wedding.findByIdAndDelete(id);
+    // Pehle wedding document dhoondhte hain
+    const wedding = await Wedding.findById(id);
 
     if (!wedding) {
       return res.status(404).json({
@@ -162,18 +174,28 @@ export const deleteWeddingPage = async (req, res) => {
       });
     }
 
-    // CHANGED: Consistent { success, data, message } response
+    // Shared cascade helper se RSVPs aur wedding delete karte hain
+    const { deletedRsvps } = await deleteWeddingsAndRsvps(
+      [wedding._id],
+      wedding.shareSlug ? [wedding.shareSlug] : []
+    );
+
+    console.log(`[Cascade] deleted 1 weddings and ${deletedRsvps} RSVPs for wedding ${wedding._id}`);
+
     return res.status(200).json({
       success: true,
-      data: null,
-      message: `${wedding.brideName} aur ${wedding.groomName} ka wedding page delete ho gaya.`,
+      data: {
+        deletedRsvps,
+      },
+      deletedRsvps,
+      message: `${wedding.brideName} aur ${wedding.groomName} ka wedding page aur ${deletedRsvps} RSVPs delete ho gaye.`,
     });
   } catch (error) {
     console.error('[deleteWeddingPage Error]:', error.message);
     return res.status(500).json({
       success: false,
       data: null,
-      message: 'Wedding page delete karne me error aaya.',
+      message: 'Wedding page delete karne me error aaya: ' + error.message,
       error: error.message,
     });
   }

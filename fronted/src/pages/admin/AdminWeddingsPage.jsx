@@ -102,8 +102,12 @@ export default function AdminWeddingsPage() {
     try {
       setIsDeleting(true);
       const id = deleteTarget._id || deleteTarget.id;
-      await adminDeleteWedding(id);
-      addToast('Wedding project delete ho gaya.', 'success');
+      const res = await adminDeleteWedding(id);
+      const rsvpsCount = res?.deletedRsvps ?? res?.data?.deletedRsvps ?? 0;
+      addToast(
+        res?.message || `Wedding project aur ${rsvpsCount} RSVPs delete ho gaye.`,
+        'success'
+      );
       setDeleteTarget(null);
       queryClient.invalidateQueries({ queryKey: ['adminWeddings'] });
       queryClient.invalidateQueries({ queryKey: ['adminAnalytics'] });
@@ -400,7 +404,7 @@ export default function AdminWeddingsPage() {
       >
         <div className="space-y-4">
           <p className="text-sm text-[#2B2B2B]">
-            Kya aap sach me <strong>{deleteTarget?.brideName} & {deleteTarget?.groomName}</strong> ka wedding page delete karna chahte hain? Ye action irreversible hai aur iska public URL band ho jayega.
+            Kya aap sach me <strong>{deleteTarget?.brideName} & {deleteTarget?.groomName}</strong> ka wedding page delete karna chahte hain? Is wedding page ko delete karne par iske saare RSVPs bhi hamesha ke liye delete ho jayenge.
           </p>
           <div className="pt-4 border-t border-[#EADCC9] flex justify-end gap-3">
             <Button

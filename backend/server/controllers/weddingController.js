@@ -1,6 +1,7 @@
 import { v2 as cloudinary } from 'cloudinary';
 import Wedding from '../models/Wedding.js';
 import Rsvp from '../models/Rsvp.js';
+import { deleteWeddingsAndRsvps } from '../utils/cascadeHelper.js';
 
 /**
  * getCloudinary Helper:
@@ -279,10 +280,10 @@ export const updateWeddingInfo = async (req, res) => {
  */
 export const deleteWeddingInfo = async (req, res) => {
   try {
-    // Database se is user ka wedding page delete kar rahe hain
-    const deletedWedding = await Wedding.findOneAndDelete({ user: req.user._id });
+    // Database se is user ka wedding page find karte hain
+    const wedding = await Wedding.findOne({ user: req.user._id });
 
-    if (!deletedWedding) {
+    if (!wedding) {
       return res.status(404).json({
         success: false,
         data: null,
@@ -290,13 +291,21 @@ export const deleteWeddingInfo = async (req, res) => {
       });
     }
 
-    // Wedding ke saath uske RSVP documents bhi delete kar rahe hain (orphan na bachein)
-    await Rsvp.deleteMany({ wedding: deletedWedding._id });
+    // Shared cascade helper se RSVPs aur wedding delete karte hain
+    const { deletedRsvps } = await deleteWeddingsAndRsvps(
+      [wedding._id],
+      wedding.shareSlug ? [wedding.shareSlug] : []
+    );
+
+    console.log(`[Cascade] deleted 1 weddings and ${deletedRsvps} RSVPs for user ${req.user._id}`);
 
     // CHANGED: Consistent { success, data, message } response
     return res.status(200).json({
       success: true,
-      data: null,
+      data: {
+        deletedRsvps,
+      },
+      deletedRsvps,
       message: 'Wedding page successfully delete ho gaya!',
     });
   } catch (error) {
@@ -304,7 +313,7 @@ export const deleteWeddingInfo = async (req, res) => {
     return res.status(500).json({
       success: false,
       data: null,
-      message: 'Wedding page delete karne me server error aaya.',
+      message: 'Wedding page delete karne me server error aaya: ' + error.message,
       error: error.message,
     });
   }
