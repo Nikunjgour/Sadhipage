@@ -30,7 +30,7 @@ export default function AdminDashboardPage() {
   // Stats cards configuration
   const statCards = [
     {
-      title: 'Total Registered Users',
+      title: 'Total Users',
       value: analytics?.totalUsers ?? '—',
       icon: '👥',
       color: 'border-l-[#7A1E3A]',

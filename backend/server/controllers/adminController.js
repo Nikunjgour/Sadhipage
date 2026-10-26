@@ -94,8 +94,8 @@ export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Database se user document delete kiya
-    const user = await User.findByIdAndDelete(id);
+    // Pehle target user load karte hain
+    const user = await User.findById(id);
 
     if (!user) {
       return res.status(404).json({
@@ -104,6 +104,17 @@ export const deleteUser = async (req, res) => {
         message: `ID ${id} wala user database me nahi mila.`,
       });
     }
+
+    // Admin accounts delete nahi ho sakte (covers self-delete aur koi bhi admin)
+    if (user.role === 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Admin accounts delete nahi kiye ja sakte.',
+      });
+    }
+
+    // Database se user document delete kiya
+    await User.findByIdAndDelete(id);
 
     // Cascading cleanup: is user ke wedding pages aur unke RSVP documents bhi
     // delete kar rahe hain (Rsvp wedding _id se linked hai, isliye pehle ids nikalo)
@@ -195,7 +206,7 @@ export const getAnalytics = async (req, res) => {
       pagesCreatedThisWeek,
       pagesCreatedThisMonth,
     ] = await Promise.all([
-      User.countDocuments(), // Total registered users
+      User.countDocuments({ role: 'user' }), // Total normal users
       Wedding.countDocuments(), // Total weddings
       Wedding.countDocuments({
         generatedHTML: { $exists: true, $ne: '' }, // Jinka AI HTML generate ho chuka hai
@@ -245,13 +256,29 @@ export const getAnalytics = async (req, res) => {
 export const updateUserByAdmin = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email, role } = req.body;
+    const { name, email } = req.body;
 
-    // Update karne ke liye fields prepare kar rahe hain
+    const targetUser = await User.findById(id);
+    if (!targetUser) {
+      return res.status(404).json({
+        success: false,
+        data: null,
+        message: `ID ${id} wala user database me nahi mila.`,
+      });
+    }
+
+    // Admin accounts edit nahi kiye ja sakte
+    if (targetUser.role === 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Admin accounts edit nahi kiye ja sakte.',
+      });
+    }
+
+    // Role aur password ignore kiya jata hai — sirf name/email edit ho sakta hai
     const updateData = {};
     if (name !== undefined) updateData.name = name;
     if (email !== undefined) updateData.email = email;
-    if (role !== undefined) updateData.role = role;
 
     // Database me user update kar rahe hain aur password field ko exclude rakhte hain
     const updatedUser = await User.findByIdAndUpdate(
@@ -260,15 +287,6 @@ export const updateUserByAdmin = async (req, res) => {
       { new: true, runValidators: true }
     ).select('-password');
 
-    if (!updatedUser) {
-      return res.status(404).json({
-        success: false,
-        data: null,
-        message: `ID ${id} wala user database me nahi mila.`,
-      });
-    }
-
-    // CHANGED: Consistent { success, data, message } response
     return res.status(200).json({
       success: true,
       data: {

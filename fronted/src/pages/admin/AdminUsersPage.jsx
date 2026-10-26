@@ -18,7 +18,7 @@ export default function AdminUsersPage() {
 
   // Edit Modal State
   const [editUser, setEditUser] = useState(null);
-  const [editFormData, setEditFormData] = useState({ name: '', email: '', role: 'user' });
+  const [editFormData, setEditFormData] = useState({ name: '', email: '' });
   const [isEditing, setIsEditing] = useState(false);
 
   // Delete Modal State
@@ -29,7 +29,6 @@ export default function AdminUsersPage() {
   const {
     data: users = [],
     isLoading: loading,
-    refetch: fetchUsers,
   } = useQuery({
     queryKey: ['adminUsers'],
     queryFn: async () => {
@@ -50,13 +49,12 @@ export default function AdminUsersPage() {
     );
   }, [users, searchTerm]);
 
-  // Edit Modal open karna
+  // Edit Modal open karna (sirf normal users ke liye)
   const handleOpenEdit = (user) => {
     setEditUser(user);
     setEditFormData({
       name: user.name || '',
       email: user.email || '',
-      role: user.role || 'user',
     });
   };
 
@@ -68,11 +66,15 @@ export default function AdminUsersPage() {
     try {
       setIsEditing(true);
       const userId = editUser._id || editUser.id;
-      await adminUpdateUser(userId, editFormData);
-      addToast('User safaltapoorvak update ho gaya!', 'success');
+      const res = await adminUpdateUser(userId, {
+        name: editFormData.name,
+        email: editFormData.email,
+      });
+      addToast(res?.message || 'User safaltapoorvak update ho gaya!', 'success');
       setEditUser(null);
       // Query cache invalidate karke live data sync karo
       queryClient.invalidateQueries({ queryKey: ['adminUsers'] });
+      queryClient.invalidateQueries({ queryKey: ['adminAnalytics'] });
     } catch (err) {
       addToast(err.message || 'User update nahi ho saka', 'error');
     } finally {
@@ -87,8 +89,8 @@ export default function AdminUsersPage() {
     try {
       setIsDeleting(true);
       const userId = deleteUserTarget._id || deleteUserTarget.id;
-      await adminDeleteUser(userId);
-      addToast('User delete ho gaya.', 'success');
+      const res = await adminDeleteUser(userId);
+      addToast(res?.message || 'User delete ho gaya.', 'success');
       setDeleteUserTarget(null);
       queryClient.invalidateQueries({ queryKey: ['adminUsers'] });
       queryClient.invalidateQueries({ queryKey: ['adminAnalytics'] });
@@ -98,7 +100,6 @@ export default function AdminUsersPage() {
       setIsDeleting(false);
     }
   };
-
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-[#FFF9F2]">
@@ -122,7 +123,7 @@ export default function AdminUsersPage() {
 
           <div className="flex items-center gap-3">
             <span className="text-xs bg-[#FFF9F2] text-[#7A1E3A] border border-[#C9A24B] px-3 py-1.5 rounded-full font-bold">
-              Total: {users.length} Users
+              Total Users: {users.filter((u) => u.role !== 'admin').length}
             </span>
           </div>
         </div>
@@ -177,6 +178,8 @@ export default function AdminUsersPage() {
                 <tbody className="divide-y divide-[#EADCC9] text-sm text-[#2B2B2B]">
                   {filteredUsers.map((u) => {
                     const userId = u._id || u.id;
+                    const isAdminUser = u.role === 'admin';
+
                     return (
                       <tr key={userId} className="hover:bg-[#FFF9F2]/40 transition-colors">
                         <td className="py-4 px-6 font-medium text-[#7A1E3A] flex items-center gap-2">
@@ -190,7 +193,7 @@ export default function AdminUsersPage() {
                         </td>
                         <td className="py-4 px-6">
                           <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider ${
-                            u.role === 'admin'
+                            isAdminUser
                               ? 'bg-[#380213] text-[#C9A24B] border border-[#C9A24B]'
                               : 'bg-[#FFF9F2] text-[#7A1E3A] border border-[#C9A24B]/50'
                           }`}>
@@ -203,20 +206,26 @@ export default function AdminUsersPage() {
                             : 'N/A'}
                         </td>
                         <td className="py-4 px-6 text-right space-x-2">
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => handleOpenEdit(u)}
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            variant="danger"
-                            size="sm"
-                            onClick={() => setDeleteUserTarget(u)}
-                          >
-                            Delete
-                          </Button>
+                          {isAdminUser ? (
+                            <span className="text-xs text-[#7A7A7A] italic">—</span>
+                          ) : (
+                            <>
+                              <Button
+                                variant="secondary"
+                                size="sm"
+                                onClick={() => handleOpenEdit(u)}
+                              >
+                                Edit
+                              </Button>
+                              <Button
+                                variant="danger"
+                                size="sm"
+                                onClick={() => setDeleteUserTarget(u)}
+                              >
+                                Delete
+                              </Button>
+                            </>
+                          )}
                         </td>
                       </tr>
                     );
@@ -229,6 +238,8 @@ export default function AdminUsersPage() {
             <div className="md:hidden divide-y divide-[#EADCC9]">
               {filteredUsers.map((u) => {
                 const userId = u._id || u.id;
+                const isAdminUser = u.role === 'admin';
+
                 return (
                   <div key={userId} className="p-4 space-y-3 bg-white">
                     <div className="flex items-center justify-between">
@@ -238,8 +249,10 @@ export default function AdminUsersPage() {
                         </span>
                         <span>{u.name || 'Unnamed'}</span>
                       </div>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                        u.role === 'admin' ? 'bg-[#380213] text-[#C9A24B]' : 'bg-[#FFF9F2] text-[#7A1E3A]'
+                      <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider ${
+                        isAdminUser
+                          ? 'bg-[#380213] text-[#C9A24B] border border-[#C9A24B]'
+                          : 'bg-[#FFF9F2] text-[#7A1E3A] border border-[#C9A24B]/50'
                       }`}>
                         {u.role || 'user'}
                       </span>
@@ -249,25 +262,31 @@ export default function AdminUsersPage() {
                       ✉️ {u.email}
                     </p>
 
-                    <div className="flex items-center justify-between pt-2 border-t border-[#EADCC9]/50 text-xs">
+                    <div className="flex flex-wrap items-center justify-between pt-2 border-t border-[#EADCC9]/50 text-xs gap-2">
                       <span className="text-[#7A7A7A]">
                         Joined: {u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN') : 'N/A'}
                       </span>
-                      <div className="space-x-2">
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          onClick={() => handleOpenEdit(u)}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          variant="danger"
-                          size="sm"
-                          onClick={() => setDeleteUserTarget(u)}
-                        >
-                          Delete
-                        </Button>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {isAdminUser ? (
+                          <span className="text-xs text-[#7A7A7A] italic">—</span>
+                        ) : (
+                          <>
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              onClick={() => handleOpenEdit(u)}
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              variant="danger"
+                              size="sm"
+                              onClick={() => setDeleteUserTarget(u)}
+                            >
+                              Delete
+                            </Button>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -303,21 +322,6 @@ export default function AdminUsersPage() {
             onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
             required
           />
-
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="editRole" className="text-sm font-medium text-[#2B2B2B]">
-              User Role
-            </label>
-            <select
-              id="editRole"
-              value={editFormData.role}
-              onChange={(e) => setEditFormData({ ...editFormData, role: e.target.value })}
-              className="w-full px-4 py-3 rounded-xl border border-[#EADCC9] bg-white text-sm outline-none focus:border-[#C9A24B]"
-            >
-              <option value="user">Regular User</option>
-              <option value="admin">Administrator</option>
-            </select>
-          </div>
 
           <div className="pt-4 border-t border-[#EADCC9] flex justify-end gap-3">
             <Button
