@@ -15,10 +15,14 @@ export default function Input({
   rows = 4,
   className = '',
   helperText = '',
+  // NEW: Optional trailing element (e.g. show/hide password toggle) rendered
+  // inside the field on the right. Existing usage is unchanged (undefined => nothing).
+  rightSlot = null,
   ...props
 }) {
   // Input base styles: rounded-xl, subtle gold border on focus
   const baseInputStyles = `w-full px-4 py-3 rounded-xl border bg-white text-[#2B2B2B] placeholder-gray-400 text-sm transition-all duration-200 outline-none
+    ${rightSlot ? 'pr-12' : ''}
     ${error ? 'border-[#C62828] focus:border-[#C62828] focus:ring-2 focus:ring-[#C62828]/20' : 'border-[#EADCC9] focus:border-[#C9A24B] focus:ring-2 focus:ring-[#C9A24B]/20'}
     ${disabled ? 'bg-gray-100 cursor-not-allowed opacity-75' : 'hover:border-[#C9A24B]/70'}
   `;
@@ -50,18 +54,26 @@ export default function Input({
           {...props}
         />
       ) : (
-        <input
-          id={id}
-          name={name}
-          type={type}
-          placeholder={placeholder}
-          value={value}
-          onChange={onChange}
-          disabled={disabled}
-          required={required}
-          className={baseInputStyles}
-          {...props}
-        />
+        <div className="relative">
+          <input
+            id={id}
+            name={name}
+            type={type}
+            placeholder={placeholder}
+            value={value}
+            onChange={onChange}
+            disabled={disabled}
+            required={required}
+            className={baseInputStyles}
+            {...props}
+          />
+          {/* NEW: Optional trailing element (show/hide password toggle) */}
+          {rightSlot && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+              {rightSlot}
+            </div>
+          )}
+        </div>
       )}
 
       {/* Helper text ya validation error message display */}

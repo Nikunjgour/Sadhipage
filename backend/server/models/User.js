@@ -38,6 +38,11 @@ const userSchema = new mongoose.Schema(
       },
       default: 'user', // By default normal user banega
     },
+    // NEW: Timestamp of the last password change (set by changePassword).
+    // Used by the protect middleware to invalidate JWTs issued before the change.
+    passwordChangedAt: {
+      type: Date,
+    },
     createdAt: {
       type: Date,
       default: Date.now,

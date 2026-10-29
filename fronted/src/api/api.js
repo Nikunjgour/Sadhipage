@@ -95,6 +95,20 @@ export async function getProfile() {
 }
 
 /**
+ * Logged-in user apna password change karta hai (fresh token return hota hai).
+ * NOTE: Response interceptor 401 par hi logout karta hai; is endpoint ka
+ * 400 (galat current password) sirf error reject hota hai, logout nahi.
+ * @param {Object} passwords - { currentPassword, newPassword }
+ * @returns {Promise<Object>} - { success, data: { token }, message }
+ */
+export async function changePassword({ currentPassword, newPassword }) {
+  return await apiClient.put('/auth/change-password', {
+    currentPassword,
+    newPassword,
+  });
+}
+
+/**
  * Logged-in user ki details fetch karta hai (/auth/me endpoint se)
  * @returns {Promise<Object>} - { success, data: { user }, message }
  */

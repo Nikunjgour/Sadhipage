@@ -3,6 +3,7 @@ import {
   registerUser,
   loginUser,
   getProfile,
+  changePassword,
 } from '../controllers/authController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
@@ -21,6 +22,14 @@ router.post('/register', registerUser);
  * Access: Public (koi bhi access kar sakta hai)
  */
 router.post('/login', loginUser);
+
+/**
+ * Route: PUT /api/auth/change-password
+ * Explanation: Logged-in user apna password change karta hai (changePassword controller JWT
+ *              verify karta hai aur fresh token return karta hai).
+ * Access: Private (Protected route — sirf apna password, admin bhi sirf apna)
+ */
+router.put('/change-password', protect, changePassword);
 
 /**
  * Route: GET /api/auth/profile

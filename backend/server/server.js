@@ -120,6 +120,13 @@ const aiLimiter = makeLimiter(
   'AI generation limit reached. Please try again after an hour.'
 );
 
+// Change password: 15 min window me max 10 attempts per IP
+const passwordLimiter = makeLimiter(
+  15 * 60 * 1000,
+  10,
+  'Too many attempts. Please try again later.'
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -150,6 +157,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth/login', authLimiter);       // Login: brute-force protection
 app.use('/api/auth/register', authLimiter);    // Register: spam account protection
 app.use('/api/ai/generate', aiLimiter);        // AI generate: quota abuse protection
+app.use('/api/auth/change-password', passwordLimiter); // Change password: brute-force protection
 app.use('/api/auth', authRoutes);       // Authentication routes (register, login, profile)
 app.use('/api/wedding', weddingRoutes); // Wedding CRUD & photo upload routes
 app.use('/api/admin', adminRoutes);     // Admin management & analytics routes

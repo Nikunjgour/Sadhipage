@@ -37,6 +37,24 @@ export const protect = async (req, res, next) => {
         });
       }
 
+      // NEW: Password change ke baad purane tokens invalidate karte hain.
+      // Agar password kabhi change hua hai aur token ka iat (seconds) us change se
+      // PEHLE ka hai, toh token reject karo (dusre devices ka old session invalid).
+      // Fresh token (change-password ka response) ka iat baad ka hota hai,
+      // isliye current session valid rehta hai. Same second par allow karte hain.
+      if (req.user.passwordChangedAt) {
+        const changedAtSeconds = Math.floor(
+          req.user.passwordChangedAt.getTime() / 1000
+        );
+        if (decoded.iat < changedAtSeconds) {
+          return res.status(401).json({
+            success: false,
+            data: null,
+            message: 'Password was changed. Please log in again.',
+          });
+        }
+      }
+
       // Token sahi hai, agle middleware ya controller par jao
       next();
     } catch (error) {

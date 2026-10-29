@@ -1,11 +1,12 @@
 // Ye component logged-in user ka profile details, role badge, aur logout action render karta hai
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import Sidebar from '../../components/Sidebar';
 import Button from '../../components/Button';
+import Input from '../../components/Input';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import { getProfile } from '../../api/api';
+import { getProfile, changePassword } from '../../api/api';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 
@@ -182,7 +183,211 @@ export default function ProfilePage() {
             </div>
           </div>
         )}
+
+        {/* NEW: Change Password card (rendered only when the user session exists) */}
+        {effectiveUser && <ChangePasswordCard />}
       </main>
+    </div>
+  );
+}
+
+/**
+ * NEW: PasswordField
+ * Password input with a show/hide toggle button inside the field
+ * (reuses the shared Input component, same maroon/gold styling).
+ */
+function PasswordField({
+  id,
+  label,
+  value,
+  onChange,
+  error,
+  disabled,
+  placeholder,
+  autoComplete,
+}) {
+  const [show, setShow] = useState(false);
+
+  return (
+    <Input
+      id={id}
+      label={label}
+      name={id}
+      type={show ? 'text' : 'password'}
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+      error={error}
+      disabled={disabled}
+      required
+      autoComplete={autoComplete}
+      rightSlot={
+        <button
+          type="button"
+          aria-label={show ? 'Hide password' : 'Show password'}
+          title={show ? 'Hide password' : 'Show password'}
+          onClick={() => setShow((s) => !s)}
+          disabled={disabled}
+          className="cursor-pointer select-none text-sm text-[#7A1E3A]/60 transition-colors duration-200 hover:text-[#7A1E3A] focus:outline-none"
+        >
+          {show ? '🙈' : '👁️'}
+        </button>
+      }
+    />
+  );
+}
+
+/**
+ * NEW: ChangePasswordCard
+ * "Change Password" card below the account card (same card-royal maroon/gold theme).
+ * Validates on the client, calls PUT /auth/change-password, and replaces the
+ * stored JWT with the fresh token so the user stays logged in.
+ */
+function ChangePasswordCard() {
+  const { updateToken } = useAuth();
+  const { addToast } = useToast();
+
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [serverError, setServerError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  // Client-side validation (mirrors the backend rules)
+  const validateFields = () => {
+    const next = {};
+    if (!currentPassword) {
+      next.currentPassword = 'Current password is required.';
+    }
+    if (!newPassword) {
+      next.newPassword = 'New password is required.';
+    } else if (newPassword.length < 6) {
+      next.newPassword = 'New password must be at least 6 characters long.';
+    } else if (newPassword.length > 72) {
+      next.newPassword = 'New password cannot exceed 72 characters.';
+    } else if (currentPassword && newPassword === currentPassword) {
+      next.newPassword =
+        'New password must be different from the current password.';
+    }
+    if (!confirmPassword) {
+      next.confirmPassword = 'Please confirm the new password.';
+    } else if (newPassword && confirmPassword !== newPassword) {
+      next.confirmPassword = 'Passwords do not match.';
+    }
+    return next;
+  };
+
+  const handleChangePassword = async (event) => {
+    event.preventDefault();
+    if (submitting) return; // single request only
+
+    setServerError('');
+    const errors = validateFields();
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+
+    setSubmitting(true);
+    try {
+      const data = await changePassword({ currentPassword, newPassword });
+      const nextToken = data?.token || data?.data?.token || '';
+      if (nextToken) {
+        // Replace the stored JWT so the session survives without re-login
+        updateToken(nextToken);
+      }
+      addToast('Password updated successfully.', 'success');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      setFieldErrors({});
+    } catch (err) {
+      const message =
+        err?.message || 'Failed to update password. Please try again.';
+      setServerError(message);
+      addToast(message, 'error');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const inputChangeHandler = (setter) => (event) => {
+    setter(event.target.value);
+    // Clear the field's inline error as the user types again
+    if (event.target.name && fieldErrors[event.target.name]) {
+      setFieldErrors((prev) => ({ ...prev, [event.target.name]: '' }));
+    }
+  };
+
+  return (
+    <div className="card-royal mt-6 p-6 sm:p-10 bg-white">
+      {/* Card Header */}
+      <div className="pb-5 border-b border-[#EADCC9]">
+        <h2 className="font-serif text-2xl font-bold text-[#7A1E3A] flex items-center gap-2">
+          🔒 Change Password
+        </h2>
+        <p className="text-sm text-[#7A7A7A] mt-1">
+          Choose a new password of at least 6 characters for your account
+        </p>
+      </div>
+
+      <form
+        onSubmit={handleChangePassword}
+        className="mt-6 space-y-5"
+        noValidate
+      >
+        <PasswordField
+          id="currentPassword"
+          label="Current Password"
+          placeholder="Enter your current password"
+          value={currentPassword}
+          onChange={inputChangeHandler(setCurrentPassword)}
+          error={fieldErrors.currentPassword}
+          disabled={submitting}
+          autoComplete="current-password"
+        />
+
+        <PasswordField
+          id="newPassword"
+          label="New Password"
+          placeholder="Enter your new password"
+          value={newPassword}
+          onChange={inputChangeHandler(setNewPassword)}
+          error={fieldErrors.newPassword}
+          disabled={submitting}
+          autoComplete="new-password"
+          helperText="Must be at least 6 characters long."
+        />
+
+        <PasswordField
+          id="confirmPassword"
+          label="Confirm New Password"
+          placeholder="Repeat your new password"
+          value={confirmPassword}
+          onChange={inputChangeHandler(setConfirmPassword)}
+          error={fieldErrors.confirmPassword}
+          disabled={submitting}
+          autoComplete="new-password"
+        />
+
+        {/* Inline server/submit error */}
+        {serverError && (
+          <p className="text-xs font-medium text-[#C62828]">{serverError}</p>
+        )}
+
+        <div className="pt-2 flex justify-end">
+          <Button
+            type="submit"
+            variant="primary"
+            size="md"
+            icon="🔑"
+            loading={submitting}
+            loadingText="Updating..."
+            disabled={submitting}
+          >
+            Update Password
+          </Button>
+        </div>
+      </form>
     </div>
   );
 }

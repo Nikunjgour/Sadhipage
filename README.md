@@ -1,16 +1,40 @@
-# 💒 ShaadiPage — AI-Powered Wedding Website Platform
+<div align="center">
 
-ShaadiPage is a full-stack web platform where couples enter their wedding details and **Google Gemini AI** generates a beautiful, responsive **wedding website** for them. The couple shares a public link with guests, guests **RSVP** directly on the page, and the couple sees every response on their dashboard.
+# 💒 ShaadiPage
 
-## 🔗 Live Demo
+### AI-Powered Wedding Website Platform
 
-| Part                 | URL                                     |
-| -------------------- | --------------------------------------- |
-| Frontend (Vercel)    | https://sadhipage.vercel.app            |
-| Backend API (Render) | https://shaadipage-backend.onrender.com |
-| Source Code          | https://github.com/Nikunjgour/Sadhipage |
+Couples enter their wedding details, **Google Gemini AI** builds a beautiful wedding website, guests **RSVP** on the page, and the couple tracks every response on a dashboard.
 
-> ⚠️ The backend runs on Render's free plan. After 15 minutes without requests the server sleeps, and the first request afterwards can take 30-50 seconds. An uptime monitor (see "Keeping the server awake") avoids this.
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-Express-339933?logo=node.js&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb&logoColor=white)
+![Gemini](https://img.shields.io/badge/Google-Gemini%20AI-4285F4?logo=google&logoColor=white)
+![Vercel](https://img.shields.io/badge/Frontend-Vercel-000000?logo=vercel&logoColor=white)
+![Render](https://img.shields.io/badge/Backend-Render-46E3B7?logo=render&logoColor=white)
+
+**[Live Demo](https://sadhipage.vercel.app)** · **[Backend API](https://shaadipage-backend.onrender.com)** · **[Source Code](https://github.com/Nikunjgour/Sadhipage)**
+
+</div>
+
+> ⚠️ The backend runs on Render's free plan. After 15 minutes without requests the server sleeps, and the first request afterwards can take 30-50 seconds. See "Keeping the server awake" to avoid this.
+
+---
+
+## 📑 Table of Contents
+
+1. [Features](#-features)
+2. [Tech Stack](#-tech-stack)
+3. [Project Structure](#-project-structure)
+4. [How It Works](#-how-it-works)
+5. [Environment Variables](#-environment-variables)
+6. [Local Development](#-local-development)
+7. [Deployment Guide](#-deployment-guide-free)
+8. [API Endpoints](#-api-endpoints)
+9. [Database Models](#-database-models)
+10. [Security](#-security)
+11. [Troubleshooting](#-troubleshooting)
+12. [Known Limitations and Future Scope](#-known-limitations)
 
 ---
 
@@ -19,12 +43,13 @@ ShaadiPage is a full-stack web platform where couples enter their wedding detail
 ### Couples (Users)
 
 - Register and log in (JWT authentication)
-- **Wedding Details form:** bride and groom names, date, venue, love story, couple photo (Cloudinary upload)
+- **Wedding Details form:** bride and groom names, date, venue, love story and couple photo (Cloudinary upload)
 - **AI Generator:** one click generates a complete wedding website with Gemini
-- **Background generation with live status:** generation runs on the server in the background and the UI polls the status automatically. No refresh needed, and it keeps running if you switch tabs or reload
+- **Background generation with live status:** the server builds the page in the background and the UI polls the status automatically. No refresh needed, and it keeps running if you switch tabs or reload
 - **My Wedding Page:** desktop and mobile preview, regenerate, edit details, delete, copy share link
 - **Dashboard:** progress stepper (Details → AI Page → Share), public link and the list of **RSVPs with stats**
 - **Profile page:** name, email, role, member since
+- **Change Password:** current password required, new password replaces the old hash in the database, and sessions on other devices are logged out
 
 ### Guests
 
@@ -38,14 +63,14 @@ ShaadiPage is a full-stack web platform where couples enter their wedding detail
 - **Manage Users:** view all accounts, edit and delete normal users
 - **Wedding Pages directory:** view, edit and delete any wedding page
 - Switch between Admin Panel and User View from the sidebar
-- **Admin protection rules:** admin accounts can never be deleted or edited from the panel (not even by themselves). Admins are created or removed only directly in the database
+- **Protected admin accounts:** admin accounts can never be deleted or edited from the panel, not even by themselves. Admins are created or removed only directly in the database
 
-### What the AI generated page contains
+### What the AI-generated page contains
 
 - Slim "ShaadiPage" brand strip at the top (not a navbar, no links)
-- Hero with couple names, date and venue (the couple photo is shown fully, over a blurred background)
+- Hero with couple names, date and venue (the couple photo is shown fully over a blurred background)
 - Live countdown timer
-- Details cards and "Our Love Story" section with the photo
+- Details cards and an "Our Love Story" section with the photo
 - RSVP form (connected to the backend by the host app)
 - Footer: "Made with love on ShaadiPage"
 - Maroon, gold and ivory theme, fully responsive
@@ -54,28 +79,16 @@ ShaadiPage is a full-stack web platform where couples enter their wedding detail
 
 ## 🏗️ Tech Stack
 
-**Frontend**
-
-- React 19, Vite 8, Tailwind CSS v4
-- React Router DOM v7
-- TanStack Query v5 (server state and polling)
-- Axios (JWT interceptor)
-
-**Backend**
-
-- Node.js (ES Modules), Express 4
-- MongoDB Atlas with Mongoose
-- JWT (`jsonwebtoken`) and `bcryptjs`
-- Cloudinary and Multer (photo upload)
-- Google Gemini (`@google/generative-ai`), model `gemini-3.8-flash` with fallback `gemini-3.6-flash`
-- `express-rate-limit`, `cors`, `dotenv`
-
-**Hosting**
-
-- Frontend: Vercel
-- Backend: Render
-- Database: MongoDB Atlas
-- Images: Cloudinary
+| Layer      | Technology                                                                                         |
+| ---------- | -------------------------------------------------------------------------------------------------- |
+| Frontend   | React 19, Vite 8, Tailwind CSS v4, React Router v7, TanStack Query v5, Axios                       |
+| Backend    | Node.js (ES Modules), Express 4                                                                    |
+| Database   | MongoDB Atlas with Mongoose                                                                        |
+| Auth       | JWT (`jsonwebtoken`) and `bcryptjs`                                                                |
+| AI         | Google Gemini (`@google/generative-ai`), model `gemini-3.8-flash` with fallback `gemini-3.6-flash` |
+| Media      | Cloudinary and Multer (image upload)                                                               |
+| Protection | `express-rate-limit`, `cors`                                                                       |
+| Hosting    | Vercel (frontend), Render (backend), MongoDB Atlas (database)                                      |
 
 ---
 
@@ -83,6 +96,9 @@ ShaadiPage is a full-stack web platform where couples enter their wedding detail
 
 ```
 sadhipage/
+├── package.json                   # root scripts
+├── .gitignore
+├── README.md
 ├── backend/
 │   ├── .env.example
 │   ├── package.json
@@ -90,11 +106,11 @@ sadhipage/
 │       ├── server.js              # Express app, CORS, rate limits, trust proxy, startup reset
 │       ├── config/db.js           # MongoDB connection
 │       ├── models/
-│       │   ├── User.js            # name, email, password hash, role
+│       │   ├── User.js            # name, email, password hash, role, passwordChangedAt
 │       │   ├── Wedding.js         # couple details, photo, generated HTML, slug, generation status
 │       │   └── Rsvp.js            # guest RSVP linked to a wedding
 │       ├── controllers/
-│       │   ├── authController.js
+│       │   ├── authController.js  # register, login, profile, change password
 │       │   ├── weddingController.js
 │       │   ├── aiController.js    # Gemini prompt and background generation job
 │       │   └── adminController.js
@@ -134,7 +150,7 @@ sadhipage/
 5. Status becomes `done` (or `failed` with a message)
 6. The frontend polls `GET /api/wedding/my-page` every 4 seconds and flips to "Ready" automatically
 
-Status values: `idle` → `generating` → `done` / `failed`. If the server restarts while a job is running, stuck jobs are marked `failed` on startup.
+Status values: `idle` → `generating` → `done` / `failed`. If the server restarts during a job, stuck jobs are marked `failed` on startup.
 
 ### 2. RSVP flow
 
@@ -146,11 +162,18 @@ Status values: `idle` → `generating` → `done` / `failed`. If the server rest
 
 ### 3. Share link
 
-The link is built from `window.location.origin`, so it always uses the domain the app is running on (for example `https://sadhipage.vercel.app/w/<slug>`).
+The link is built from `window.location.origin`, so it always uses the domain the app runs on (for example `https://sadhipage.vercel.app/w/<slug>`).
 
-### 4. Cascade delete
+### 4. Change password
 
-Deleting a user, or a wedding page, also deletes the related wedding and all of its RSVPs. The server returns how many documents were removed.
+1. The user sends the current and the new password to `PUT /api/auth/change-password`
+2. The server checks the current password, validates the new one (6 to 72 characters, different from the current one), and saves it. The bcrypt hash in the database is replaced by the new hash
+3. `passwordChangedAt` is stored and a fresh JWT is returned, so the current session continues
+4. Tokens issued before the change are rejected, so other devices must log in again
+
+### 5. Cascade delete
+
+Deleting a user or a wedding page also deletes the related wedding and all of its RSVPs. The server returns how many documents were removed.
 
 ---
 
@@ -243,7 +266,7 @@ Registration always creates a normal user (for security). To make an admin:
    - **Build Command:** `npm run build`, **Output Directory:** `dist`
 3. Environment variable `VITE_API_URL` = `https://<your-backend>.onrender.com/api`
    - Choose type **Config** (not Secret). `VITE_` variables are public by design
-   - Must end with `/api`, with no trailing `/`
+   - It must end with `/api`, with no trailing `/`
 4. Deploy
 
 ### 4. Final step: CORS
@@ -273,6 +296,7 @@ All responses use this shape:
 | POST   | `/api/auth/login`                | None  | Log in and receive a JWT                                                     |
 | GET    | `/api/auth/profile`              | JWT   | Logged-in user's profile                                                     |
 | GET    | `/api/auth/me`                   | JWT   | Alias of profile                                                             |
+| PUT    | `/api/auth/change-password`      | JWT   | Change own password (needs the current password) and receive a fresh JWT     |
 | POST   | `/api/wedding/create`            | JWT   | Save wedding details and create the share slug                               |
 | GET    | `/api/wedding/my-page`           | JWT   | Own wedding page, generation status and RSVPs                                |
 | PUT    | `/api/wedding/update`            | JWT   | Update wedding details                                                       |
@@ -294,7 +318,7 @@ All responses use this shape:
 
 ## 🗄️ Database Models
 
-- **User:** `name`, `email` (unique), `password` (bcrypt hash), `role` (`user` or `admin`), `createdAt`
+- **User:** `name`, `email` (unique), `password` (bcrypt hash), `role` (`user` or `admin`), `passwordChangedAt`, `createdAt`
 - **Wedding:** `user`, `brideName`, `groomName`, `weddingDate`, `venue`, `story`, `photoUrl`, `generatedHTML`, `isPublic`, `shareSlug` (unique), `generationStatus` (`idle`, `generating`, `done`, `failed`), `generationError`, `generationStartedAt`
 - **Rsvp:** `wedding`, `weddingSlug`, `name`, `attending`, `guestCount` (0-50), `email`, `note`
 
@@ -313,15 +337,16 @@ npm run cleanup:orphans -- --apply # actually deletes
 ## 🔒 Security
 
 - Passwords hashed with bcrypt (10 salt rounds), JWT valid for 30 days
+- Changing a password verifies the current one, replaces the stored hash, and invalidates tokens issued before the change
 - The role is never read from the request body on register (every new user is `user`)
 - Admin accounts cannot be edited or deleted through the API
 - CORS allows only the origins listed in `CLIENT_URL` (blocked origins get 403)
-- Rate limits: login and register 20 requests per 15 minutes, AI generate 10 requests per hour
+- Rate limits: login and register 20 requests per 15 minutes, change password 10 requests per 15 minutes, AI generate 10 requests per hour
 - `trust proxy` is enabled so rate limiting works correctly behind Render's proxy
 - Stack traces are never returned in production
 - AI-generated HTML runs in a sandboxed iframe without `allow-same-origin`, so it cannot read the app's token or storage
 - User input (names, venue, story) is escaped before it goes into the AI prompt
-- Deleting a user or wedding also removes the related RSVPs
+- Deleting a user or a wedding also removes the related RSVPs
 - `.env` files are listed in `.gitignore`
 
 ---
@@ -337,21 +362,22 @@ npm run cleanup:orphans -- --apply # actually deletes
 | Photo upload fails                                             | Check the three `CLOUDINARY_*` variables on Render                                                    |
 | Share link shows 404 on refresh                                | `fronted/vercel.json` (SPA rewrite) must exist                                                        |
 | Vercel will not save `VITE_API_URL`                            | The variable type is Secret. Delete it and recreate it as Config                                      |
+| Logged out after changing the password on another device       | Expected. Old sessions are invalidated, log in again with the new password                            |
 
 ---
 
 ## ⚠️ Known Limitations
 
 - Free Render plan: the server sleeps when idle, and a generation running while it sleeps can be interrupted
-- No profile editing (name or password change) yet
+- No name or email editing yet (changing the password is available)
 - No toggle to make a wedding page private in the UI (`isPublic` exists in the database)
-- No password reset or email verification
+- No password reset by email and no email verification
 
 ## 🔮 Future Scope
 
 - Custom domain and multiple page themes
 - Guest list export (CSV) and RSVP email notifications
-- Profile editing and password reset
+- Name and email editing, and password reset by email
 - Multi-language wedding pages
 
 ---

@@ -68,6 +68,14 @@ export const AuthProvider = ({ children }) => {
     queryClient.clear();
   };
 
+  // NEW: Password change ke baad fresh token replace karne ka helper.
+  // Existing token state aur localStorage ('shaadi_token') update karta hai
+  // taaki user logged-in rahe. Login/logout behavior unchanged.
+  const updateToken = (newToken) => {
+    localStorage.setItem('shaadi_token', newToken);
+    setToken(newToken);
+  };
+
   // User details update karne ka helper function
   const updateUserData = (updatedFields) => {
     setUser((prev) => {
@@ -88,6 +96,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         login,
         logout,
+        updateToken,
         updateUserData,
       }}
     >
